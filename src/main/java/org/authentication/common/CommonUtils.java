@@ -64,7 +64,11 @@ public class CommonUtils {
 
     public static boolean isNull(Object o) {
         if (o instanceof String) {
-            if (o == null || ((String) o).isEmpty() || ((String) o).isBlank() || ((String) o).length() == 0)
+            if (o == null ||
+                    ((String) o).isEmpty() ||
+                    ((String) o).isBlank() ||
+                    ((String) o).length() == 0 ||
+                    ((String) o).toLowerCase().trim().equals("null"))
                 return true;
             return false;
         }
