@@ -1,6 +1,5 @@
 package org.authentication.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.authentication.common.CommonUtils;
 import org.authentication.common.JwtTokenUtil;
 import org.authentication.dto.LoginDto;
