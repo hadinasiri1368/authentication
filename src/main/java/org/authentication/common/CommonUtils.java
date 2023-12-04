@@ -1,15 +1,28 @@
 package org.authentication.common;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.authentication.model.Permission;
+import org.authentication.model.User;
+import org.authentication.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class CommonUtils {
+    private static UserService userService;
+
+    @Autowired
+    public CommonUtils(UserService userService) {
+        CommonUtils.userService = userService;
+    }
+
     private static String getHashString(String inputStrong, String hashType) {
         try {
             MessageDigest md = MessageDigest.getInstance(hashType);
@@ -92,5 +105,14 @@ public class CommonUtils {
         if (CommonUtils.isNull(request.getHeader("Authorization")))
             return null;
         return request.getHeader("Authorization").replaceAll("Bearer ", "");
+    }
+
+    public static Boolean hasPermission(User user, String url) {
+        if (user.isAdmin())
+            return true;
+        List<Permission> permissionList = userService.listAllPermission(user.getId());
+        long count = 0;
+        count = permissionList.stream().filter(a -> a.getUrl().toLowerCase().equals(url.toLowerCase())).count();
+        return count > 0 ? true : false;
     }
 }

@@ -3,6 +3,7 @@ package org.authentication.service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.authentication.common.CommonUtils;
+import org.authentication.model.Permission;
 import org.authentication.model.User;
 import org.authentication.repository.JPA;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ public class UserService {
     private EntityManager entityManager;
 
     public void insert(User user, Long userId) {
+        user.setId(null);
         user.setInsertedUserId(userId);
         user.setInsertedDateTime(new Date());
         user.setPassword(CommonUtils.getSHA1Hash(user.getPassword()));
@@ -55,6 +57,29 @@ public class UserService {
     public List findAll() {
         Query query = entityManager.createQuery("select o from user o");
         return genericJPA.listByQuery(query);
+    }
+
+
+    public List<Permission> listAllPermission(Long userId) {
+        String hql = "select p from userPermission up \n" +
+                "    inner join permission p on p.id=up.permission.id \n" +
+                "where up.user.id=:userId\n" +
+                "union\n" +
+                "select p from userRole ur \n" +
+                "    inner join rolePermission rp on rp.role.id=ur.role.id\n" +
+                "    inner join permission p on p.id=rp.permission.id\n" +
+                "where ur.user.id=:userId\n" +
+                "union\n" +
+                "select p from userGroupDetail ugd\n" +
+                "    inner join userGroup ug on ug.id=ugd.userGroup.id\n" +
+                "    inner join userGroupRole ugr on ugr.userGroup.id=ugd.userGroup.id\n" +
+                "    inner join rolePermission rp on rp.role.id=ugr.role.id\n" +
+                "    inner join permission p on p.id=rp.permission.id\n" +
+                "where ugd.user.id=:userId";
+        Query query = entityManager.createQuery(hql);
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", userId);
+        return genericJPA.listByQuery(query, param);
     }
 
 }

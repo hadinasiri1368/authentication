@@ -32,8 +32,16 @@ public class JPA<ENTITY, ID> {
         return entityManager.find(aClass, id);
     }
 
-    public List listByQuery(Query query) {
+    public List listByQuery(Query query, Map<String, Object> param) {
+        if (!CommonUtils.isNull(param) && param.size() > 0)
+            for (String key : param.keySet()) {
+                query.setParameter(key, param.get(key));
+            }
         return query.getResultList();
+    }
+
+    public List listByQuery(Query query) {
+        return listByQuery(query, null);
     }
 
     public List<ENTITY> findAll(Class<ENTITY> aClass) {

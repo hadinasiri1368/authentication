@@ -15,18 +15,17 @@ public class UserAPI {
     private UserService service;
 
     @PostMapping(path = "/api/user/add")
-    public Long addUser(@RequestBody User User, HttpServletRequest request) {
+    public Long addUser(@RequestBody User user, HttpServletRequest request) {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
-        User.setId(null);
-        service.insert(User, userId);
-        return User.getId();
+        service.insert(user, userId);
+        return user.getId();
     }
 
     @PostMapping(path = "/api/user/edit")
-    public Long editUser(@RequestBody User User, HttpServletRequest request) {
+    public Long editUser(@RequestBody User user, HttpServletRequest request) {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
-        service.update(User, userId);
-        return User.getId();
+        service.update(user, userId);
+        return user.getId();
     }
 
     @PostMapping(path = "/api/user/remove/{id}")

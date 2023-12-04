@@ -7,10 +7,12 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.apache.commons.lang3.time.DateUtils;
+import org.authentication.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +34,12 @@ public class JwtTokenUtil implements Serializable {
     public static Map getUsernameFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
         return (Map) claims.get("tokenDate");
+    }
+
+    public static User getUserFromToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue((Map) claims.get("tokenDate"), User.class);
     }
 
     private static Date getExpirationDateFromToken(String token) {
