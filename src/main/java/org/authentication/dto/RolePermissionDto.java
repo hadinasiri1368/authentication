@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RolePermissionDto {
     private Long id;
-    private Long f_role_id;
-    private Long f_permission_id;
+    private Long roleId;
+    private Long permissionId;
 }
 
