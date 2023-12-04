@@ -16,14 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserGroupDetailAPI {
     @Autowired
     private GenericService<UserGroupDetail> service;
-    @PostMapping(path = "/api/userGroupDetai/add")
-    public Long addUserGroup(@RequestBody UserGroupDetailDto userGroupDetailDto, HttpServletRequest request) {
+
+    @PostMapping(path = "/api/userGroupDetail/add")
+    public Long addUserGroupDetail(@RequestBody UserGroupDetailDto userGroupDetailDto, HttpServletRequest request) {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
-        UserGroupDetail userGroupDetail=new UserGroupDetail();
+        UserGroupDetail userGroupDetail = new UserGroupDetail();
         userGroupDetail.setId(userGroupDetailDto.getId());
-        User user =new User();
+        User user = new User();
         user.setId(userGroupDetailDto.getUserId());
-        UserGroup userGroup=new UserGroup();
+        UserGroup userGroup = new UserGroup();
         userGroup.setId(userGroupDetailDto.getUserGroupId());
         userGroupDetail.setUserGroup(userGroup);
         userGroupDetail.setUser(user);
