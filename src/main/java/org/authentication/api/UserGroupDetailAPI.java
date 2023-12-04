@@ -8,9 +8,9 @@ import org.authentication.model.UserGroup;
 import org.authentication.model.UserGroupDetail;
 import org.authentication.service.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class UserGroupDetailAPI {
@@ -29,6 +29,29 @@ public class UserGroupDetailAPI {
         userGroupDetail.setUserGroup(userGroup);
         userGroupDetail.setUser(user);
         service.insert(userGroupDetail, userId);
-        return userGroupDetailDto.getId();
+        return userGroupDetail.getId();
     }
+    @PostMapping(path = "/api/userGroupDetail/edit")
+    public Long editUserGroupDetail(@RequestBody UserGroupDetail userGroupDetail, HttpServletRequest request) {
+        Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
+        service.update(userGroupDetail ,userId);
+        return userGroupDetail.getId();
+    }
+
+    @PostMapping(path = "/api/userGroupDetail/remove/{id}")
+    public Long removeUserGroupDetail(@PathVariable Long id) {
+        service.delete(new UserGroupDetail(id, null, null));
+        return id;
+    }
+
+    @GetMapping(path = "/api/userGroupDetail/{id}")
+    public UserGroupDetail getUserGroupDetail(@PathVariable Long id) {
+        return service.findOne(UserGroupDetail.class, id);
+    }
+
+    @GetMapping(path = "/api/userGroupDetail")
+    public List<UserGroupDetail> listUserGroupDetail() {
+        return service.findAll(UserGroupDetail.class);
+    }
+
 }
