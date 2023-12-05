@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserGroupRoleDto {
     private Long id;
-    private Long f_user_group_id;
-    private Long f_role_id;
+    private Long userGroupId;
+    private Long roleId;
 }

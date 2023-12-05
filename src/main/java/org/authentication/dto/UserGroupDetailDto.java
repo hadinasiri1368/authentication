@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserGroupDetailDto {
     private Long id;
-    private Long f_user_group_id;
-    private Long f_user_id;
+    private Long userGroupId;
+    private Long userId;
 }
