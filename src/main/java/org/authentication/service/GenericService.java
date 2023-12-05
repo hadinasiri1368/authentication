@@ -24,18 +24,14 @@ public class GenericService<Entity> {
         } catch (Exception e) {
             log.error("setId has error: " + e.getMessage());
         }
-        if (entity instanceof BaseEntity) {
-            ((BaseEntity) entity).setInsertedUserId(userId);
-            ((BaseEntity) entity).setInsertedDateTime(new Date());
-        }
+        ((BaseEntity) entity).setInsertedUserId(userId);
+        ((BaseEntity) entity).setInsertedDateTime(new Date());
         genericJPA.save(entity);
     }
 
     public void update(Entity entity, Long userId) {
-        if (entity instanceof BaseEntity) {
-            ((BaseEntity) entity).setUpdatedUserId(userId);
-            ((BaseEntity) entity).setUpdatedDateTime(new Date());
-        }
+        ((BaseEntity) entity).setUpdatedUserId(userId);
+        ((BaseEntity) entity).setUpdatedDateTime(new Date());
         genericJPA.update(entity);
     }
 
