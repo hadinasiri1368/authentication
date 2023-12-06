@@ -1,10 +1,12 @@
 package org.authentication.api;
+
 import jakarta.servlet.http.HttpServletRequest;
 import org.authentication.common.CommonUtils;
 import org.authentication.service.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.authentication.model.Permission;
+
 import java.util.List;
 
 @RestController
@@ -28,7 +30,7 @@ public class PermissionAPI {
 
     @PostMapping(path = "/api/permission/remove/{id}")
     public Long removePermission(@PathVariable Long id) {
-        service.delete(new Permission(id,null,null));
+        service.delete(id, Permission.class);
         return id;
     }
 

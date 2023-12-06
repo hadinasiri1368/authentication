@@ -1,5 +1,7 @@
 package org.authentication.service;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.authentication.model.BaseEntity;
 import org.authentication.repository.JPA;
@@ -15,6 +17,9 @@ import java.util.List;
 public class GenericService<Entity> {
     @Autowired
     private JPA<Entity, Long> genericJPA;
+
+    @Autowired
+    private EntityManager entityManager;
 
 
     public void insert(Entity entity, Long userId) {
@@ -37,6 +42,11 @@ public class GenericService<Entity> {
 
     public void delete(Entity entity) {
         genericJPA.remove(entity);
+    }
+
+    public int delete(Long id, Class<Entity> aClass) {
+        jakarta.persistence.Entity entity = aClass.getAnnotation(jakarta.persistence.Entity.class);
+        return entityManager.createQuery("delete from " + entity.name() + " where " + entity.name() + ".id=" + id).executeUpdate();
     }
 
     public Entity findOne(Class<Entity> aClass, Long id) {

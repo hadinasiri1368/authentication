@@ -7,6 +7,7 @@ import org.authentication.service.GenericService;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -30,7 +31,7 @@ public class UserAPI {
 
     @PostMapping(path = "/api/user/remove/{id}")
     public Long removeUser(@PathVariable Long id) {
-        service.delete(new User(id, null, null, false, null));
+        service.delete(id);
         return id;
     }
 

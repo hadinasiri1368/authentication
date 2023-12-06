@@ -29,16 +29,17 @@ public class UserRoleAPI {
         service.insert(userRole, userId);
         return userRole.getId();
     }
+
     @PostMapping(path = "/api/userRole/edit")
     public Long editUserRole(@RequestBody UserRole userRole, HttpServletRequest request) {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
-        service.update(userRole ,userId);
+        service.update(userRole, userId);
         return userRole.getId();
     }
 
     @PostMapping(path = "/api/userRole/remove/{id}")
     public Long removeUserRole(@PathVariable Long id) {
-        service.delete(new UserRole(id, null, null));
+        service.delete(id, UserRole.class);
         return id;
     }
 

@@ -30,7 +30,7 @@ public class RoleAPI {
 
     @PostMapping(path = "/api/role/remove/{id}")
     public Long removeRole(@PathVariable Long id) {
-        service.delete(new Role(id,null));
+        service.delete(id, Role.class);
         return id;
     }
 

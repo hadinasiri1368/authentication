@@ -36,6 +36,10 @@ public class UserService {
         genericJPA.remove(user);
     }
 
+    public int delete(Long userId) {
+        return entityManager.createQuery("delete from user where user.id=" + userId).executeUpdate();
+    }
+
     public User findOne(Class<User> aClass, Long id) {
         return genericJPA.findOne(aClass, id);
     }

@@ -38,7 +38,7 @@ public class UserGroupRoleAPI {
 
     @PostMapping(path = "/api/userGroupRole/remove/{id}")
     public Long removeUserGroupRole(@PathVariable Long id) {
-        service.delete(new UserGroupRole(id, null, null));
+        service.delete(id, UserGroupRole.class);
         return id;
     }
 

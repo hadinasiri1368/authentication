@@ -31,16 +31,17 @@ public class UserGroupDetailAPI {
         service.insert(userGroupDetail, userId);
         return userGroupDetail.getId();
     }
+
     @PostMapping(path = "/api/userGroupDetail/edit")
     public Long editUserGroupDetail(@RequestBody UserGroupDetail userGroupDetail, HttpServletRequest request) {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
-        service.update(userGroupDetail ,userId);
+        service.update(userGroupDetail, userId);
         return userGroupDetail.getId();
     }
 
     @PostMapping(path = "/api/userGroupDetail/remove/{id}")
     public Long removeUserGroupDetail(@PathVariable Long id) {
-        service.delete(new UserGroupDetail(id, null, null));
+        service.delete(id, UserGroupDetail.class);
         return id;
     }
 

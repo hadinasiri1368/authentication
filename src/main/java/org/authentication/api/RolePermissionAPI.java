@@ -41,7 +41,7 @@ public class RolePermissionAPI {
 
     @PostMapping(path = "/api/rolePermission/remove/{id}")
     public Long removeRolePermission(@PathVariable Long id) {
-        service.delete(new RolePermission(id, null, null));
+        service.delete(id, RolePermission.class);
         return id;
     }
 

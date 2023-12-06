@@ -39,7 +39,7 @@ public class UserPermissionAPI {
 
     @PostMapping(path = "/api/userPermission/remove/{id}")
     public Long removeUserPermission(@PathVariable Long id) {
-        service.delete(new UserPermission(id, null, null));
+        service.delete(id, UserPermission.class);
         return id;
     }
 

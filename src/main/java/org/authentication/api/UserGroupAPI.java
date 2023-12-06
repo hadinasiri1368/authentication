@@ -30,7 +30,7 @@ public class UserGroupAPI {
 
     @PostMapping(path = "/api/userGroup/remove/{id}")
     public Long removeUserGroup(@PathVariable Long id) {
-        service.delete(new UserGroup(id,null));
+        service.delete(id, UserGroup.class);
         return id;
     }
 
