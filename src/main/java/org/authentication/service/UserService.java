@@ -52,6 +52,7 @@ public class UserService {
         Map<String, Object> param = new HashMap<>();
         param.put("username", username);
         param.put("password", CommonUtils.getSHA1Hash(password));
+        param.put("isActive",true);
         List<User> users = genericJPA.findAll(User.class, param);
         if (users != null && users.size() == 1)
             return users.get(0);

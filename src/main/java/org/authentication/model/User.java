@@ -22,6 +22,8 @@ public class User extends BaseEntity {
     private String password;
     @Column(columnDefinition = "BIT", name = "is_admin")
     private boolean isAdmin;
+    @Column(columnDefinition = "BIT",name = "is_active")
+    private boolean isActive;
     @Column(columnDefinition = "DECIMAL", name = "f_person_id")
     private Long personId;
 }
