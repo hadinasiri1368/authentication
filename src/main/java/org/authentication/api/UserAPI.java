@@ -2,6 +2,8 @@ package org.authentication.api;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.authentication.common.CommonUtils;
+import org.authentication.common.JwtTokenUtil;
+import org.authentication.dto.ChangePasswordDto;
 import org.authentication.model.User;
 import org.authentication.service.GenericService;
 import org.authentication.service.UserService;
@@ -40,8 +42,13 @@ public class UserAPI {
         return service.findOne(User.class, id);
     }
 
-    @GetMapping(path = "/api/User")
+    @GetMapping(path = "/api/user")
     public List<User> listUser() {
         return service.findAll(User.class);
+    }
+
+    @PostMapping(path = "/api/user/changePassword")
+    public int changePassword(@RequestBody ChangePasswordDto changePasswordDto, HttpServletRequest request) {
+        return service.changePassword(JwtTokenUtil.getUserFromToken(CommonUtils.getToken(request)), changePasswordDto);
     }
 }

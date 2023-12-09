@@ -40,6 +40,14 @@ public class JPA<ENTITY, ID> {
         return query.getResultList();
     }
 
+    public int executeUpdate(Query query, Map<String, Object> param) {
+        if (!CommonUtils.isNull(param) && param.size() > 0)
+            for (String key : param.keySet()) {
+                query.setParameter(key, param.get(key));
+            }
+        return query.executeUpdate();
+    }
+
     public List listByQuery(Query query) {
         return listByQuery(query, null);
     }

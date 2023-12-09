@@ -3,11 +3,13 @@ package org.authentication.service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.authentication.common.CommonUtils;
+import org.authentication.dto.ChangePasswordDto;
 import org.authentication.model.Permission;
 import org.authentication.model.User;
 import org.authentication.repository.JPA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -52,7 +54,7 @@ public class UserService {
         Map<String, Object> param = new HashMap<>();
         param.put("username", username);
         param.put("password", CommonUtils.getSHA1Hash(password));
-        param.put("isActive",true);
+        param.put("isActive", true);
         List<User> users = genericJPA.findAll(User.class, param);
         if (users != null && users.size() == 1)
             return users.get(0);
@@ -85,6 +87,19 @@ public class UserService {
         Map<String, Object> param = new HashMap<>();
         param.put("userId", userId);
         return genericJPA.listByQuery(query, param);
+    }
+
+    @Transactional
+    public int changePassword(User user, ChangePasswordDto changePasswordDto) {
+        if (CommonUtils.isNull(changePasswordDto.getOldPassword()) || CommonUtils.isNull(changePasswordDto.getNewPassword()))
+            throw new RuntimeException("old or new password is null");
+        if (!CommonUtils.getSHA1Hash(changePasswordDto.getOldPassword()).equals(user.getPassword()))
+            throw new RuntimeException("old password is incorrect");
+        Map<String, Object> param = new HashMap<>();
+        param.put("pass", CommonUtils.getSHA1Hash(changePasswordDto.getNewPassword()));
+        param.put("userId", user.getId());
+        Query query = entityManager.createQuery("update user u set u.password=:pass where u.id=:userId");
+        return genericJPA.executeUpdate(query, param);
     }
 
 }
