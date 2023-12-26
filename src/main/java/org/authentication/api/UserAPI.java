@@ -4,12 +4,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.authentication.common.CommonUtils;
 import org.authentication.common.JwtTokenUtil;
 import org.authentication.dto.ChangePasswordDto;
+import org.authentication.model.Role;
 import org.authentication.model.User;
 import org.authentication.service.GenericService;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -45,6 +47,22 @@ public class UserAPI {
     @GetMapping(path = "/api/user")
     public List<User> listUser() {
         return service.findAll(User.class);
+    }
+
+    @GetMapping(path = "/api/user/role")
+    public List<Role> listRole(HttpServletRequest request) {
+        Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
+        return service.listAllRole(userId);
+    }
+    @GetMapping(path = "/api/user/colleague")
+    public List<User> listColleague(HttpServletRequest request) {
+        Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
+        return service.listAllColleague(Arrays.asList(userId));
+    }
+
+    @PostMapping(path = "/api/user/colleague")
+    public List<User> listColleague(@RequestBody List<Long> userIds) {
+        return service.listAllColleague(userIds);
     }
 
     @PostMapping(path = "/api/user/changePassword")

@@ -5,6 +5,7 @@ import jakarta.persistence.Query;
 import org.authentication.common.CommonUtils;
 import org.authentication.dto.ChangePasswordDto;
 import org.authentication.model.Permission;
+import org.authentication.model.Role;
 import org.authentication.model.User;
 import org.authentication.repository.JPA;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,28 @@ public class UserService {
         return genericJPA.listByQuery(query);
     }
 
+    public List<Role> listAllRole(Long userId) {
+        String hql = "select r from userRole ur \n" +
+                "inner join role r on r.id=ur.role.id  \n" +
+                "where ur.user.id=:userId \n" +
+                "union \n" +
+                "select r from userGroupDetail ugd \n" +
+                "inner join userGroupRole ugr on ugr.userGroup.id = ugd.userGroup.id \n" +
+                "inner join role r on r.id=ugr.role.id \n" +
+                "where ugd.user.id=:userId";
+        Query query = entityManager.createQuery(hql);
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", userId);
+        return genericJPA.listByQuery(query, param);
+    }
+
+    public List<User> listAllColleague(List<Long> userId) {
+        String hql = "select u from user u where u.personId in (select entity.personId from user entity where entity.id in (:userId))";
+        Query query = entityManager.createQuery(hql);
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", userId);
+        return genericJPA.listByQuery(query, param);
+    }
 
     public List<Permission> listAllPermission(Long userId) {
         String hql = "select p from userPermission up \n" +
