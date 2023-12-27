@@ -1,5 +1,6 @@
 package org.authentication.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "NVARCHAR(50)", updatable = false)
     private String username;
     @Column(columnDefinition = "NVARCHAR(100)", updatable = false)
+    @JsonIgnore
     private String password;
     @Column(columnDefinition = "BIT", name = "is_admin")
     private boolean isAdmin;

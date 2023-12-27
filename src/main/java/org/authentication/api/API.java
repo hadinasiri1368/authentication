@@ -28,9 +28,15 @@ public class API {
     }
 
     @GetMapping(path = "/getUserId")
-    public ResponseEntity getUserObject(@ModelAttribute("token") String token) {
+    public ResponseEntity getUserId(@ModelAttribute("token") String token) {
         Map map = JwtTokenUtil.getUsernameFromToken(token);
         return new ResponseEntity(map.get("id").toString(), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getUser")
+    public ResponseEntity getUserObject(@ModelAttribute("token") String token) {
+        Map map = JwtTokenUtil.getUsernameFromToken(token);
+        return new ResponseEntity(map, HttpStatus.OK);
     }
 
     @GetMapping(path = "/checkValidationToken")
