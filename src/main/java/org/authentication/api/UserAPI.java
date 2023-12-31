@@ -1,5 +1,6 @@
 package org.authentication.api;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.authentication.common.CommonUtils;
 import org.authentication.common.JwtTokenUtil;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
+@SecurityRequirement(name = "Bearer Authentication")
 public class UserAPI {
     @Autowired
     private UserService service;

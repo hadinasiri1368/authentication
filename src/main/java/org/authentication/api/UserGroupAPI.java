@@ -1,5 +1,6 @@
 package org.authentication.api;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.authentication.common.CommonUtils;
 import org.authentication.model.UserGroup;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@SecurityRequirement(name = "Bearer Authentication")
 public class UserGroupAPI {
     @Autowired
     private GenericService<UserGroup> service;
