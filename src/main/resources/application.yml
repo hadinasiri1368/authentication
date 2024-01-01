@@ -1,6 +1,8 @@
 server:
   port: 8081
 spring:
+  application:
+    name: "AUTHENTICATION"
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     url: jdbc:sqlserver://;serverName=172.30.23.136;databaseName=way;encrypt=true;trustServerCertificate=true;
@@ -14,4 +16,9 @@ spring:
 jwt:
   secretKey: eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcwMDYzODUzNywiaWF0IjoxNzAwNjM4NTM3fQ.cakxNusKVbUYfXIO_ldis-uQtQMxRO58Tktr31X6O_I
   expirationMinutes: 60
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8080/eureka
 
