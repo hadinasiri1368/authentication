@@ -28,19 +28,19 @@ public class API {
     }
 
     @GetMapping(path = "/getUserId")
-    public ResponseEntity getUserId(@ModelAttribute("token") String token) {
+    public ResponseEntity<String> getUserId(@ModelAttribute("token") String token) {
         Map map = JwtTokenUtil.getUsernameFromToken(token);
         return new ResponseEntity(map.get("id").toString(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/getUser")
-    public ResponseEntity getUserObject(@ModelAttribute("token") String token) {
+    public ResponseEntity<Map> getUserObject(@ModelAttribute("token") String token) {
         Map map = JwtTokenUtil.getUsernameFromToken(token);
         return new ResponseEntity(map, HttpStatus.OK);
     }
 
     @GetMapping(path = "/checkValidationToken")
-    public ResponseEntity checkValidationToken(@ModelAttribute("token") String token, @ModelAttribute("url") String url) {
+    public ResponseEntity<String> checkValidationToken(@ModelAttribute("token") String token, @ModelAttribute("url") String url) {
         String message = CommonUtils.getTokenValidationMessage(token);
         if (!CommonUtils.isNull(message)) {
             return new ResponseEntity(message, HttpStatus.BAD_REQUEST);
