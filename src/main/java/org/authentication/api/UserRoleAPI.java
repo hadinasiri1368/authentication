@@ -18,7 +18,7 @@ public class UserRoleAPI {
     private GenericService<UserRole> service;
 
     @PostMapping(path = "/api/userRole/add")
-    public Long addUserRole(@RequestBody UserRoleDto userRoleDto, HttpServletRequest request) {
+    public Long addUserRole(@RequestBody UserRoleDto userRoleDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserRole userRole = new UserRole();
         userRole.setId(userRoleDto.getId());
@@ -33,7 +33,7 @@ public class UserRoleAPI {
     }
 
     @PostMapping(path = "/api/userRole/edit")
-    public Long editUserRole(@RequestBody UserRole userRole, HttpServletRequest request) {
+    public Long editUserRole(@RequestBody UserRole userRole, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.update(userRole, userId);
         return userRole.getId();

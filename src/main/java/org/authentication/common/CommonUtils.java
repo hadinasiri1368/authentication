@@ -108,9 +108,9 @@ public class CommonUtils {
     }
 
     public static Boolean hasPermission(User user, String url) {
-        if (!user.isActive())
+        if (!user.getIsActive())
             return false;
-        if (user.isAdmin())
+        if (user.getIsAdmin())
             return true;
         List<Permission> permissionList = userService.listAllPermission(user.getId());
         long count = 0;

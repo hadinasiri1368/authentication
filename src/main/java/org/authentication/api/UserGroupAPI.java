@@ -17,14 +17,14 @@ public class UserGroupAPI {
     private GenericService<UserGroup> service;
 
     @PostMapping(path = "/api/userGroup/add")
-    public Long addUserGroup(@RequestBody UserGroup userGroup, HttpServletRequest request) {
+    public Long addUserGroup(@RequestBody UserGroup userGroup, HttpServletRequest request)throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.insert(userGroup, userId);
         return userGroup.getId();
     }
 
     @PostMapping(path = "/api/userGroup/edit")
-    public Long editUserGroup(@RequestBody UserGroup userGroup, HttpServletRequest request) {
+    public Long editUserGroup(@RequestBody UserGroup userGroup, HttpServletRequest request)throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.update(userGroup, userId);
         return userGroup.getId();

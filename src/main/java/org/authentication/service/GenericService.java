@@ -3,6 +3,7 @@ package org.authentication.service;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
+import org.authentication.common.CommonUtils;
 import org.authentication.model.BaseEntity;
 import org.authentication.repository.JPA;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,19 +23,19 @@ public class GenericService<Entity> {
     private EntityManager entityManager;
 
 
-    public void insert(Entity entity, Long userId) {
-        try {
-            Method m = entity.getClass().getMethod("setId", Long.class);
-            m.invoke(entity, (Long) null);
-        } catch (Exception e) {
-            log.error("setId has error: " + e.getMessage());
-        }
+    public void insert(Entity entity, Long userId) throws Exception {
+        Method m = entity.getClass().getMethod("setId", Long.class);
+        m.invoke(entity, (Long) null);
         ((BaseEntity) entity).setInsertedUserId(userId);
         ((BaseEntity) entity).setInsertedDateTime(new Date());
         genericJPA.save(entity);
     }
 
-    public void update(Entity entity, Long userId) {
+    public void update(Entity entity, Long userId) throws Exception {
+        Method m = entity.getClass().getMethod("getId");
+        Long id = (Long) m.invoke(entity);
+        if (CommonUtils.isNull(id))
+            throw new RuntimeException("id.not.found");
         ((BaseEntity) entity).setUpdatedUserId(userId);
         ((BaseEntity) entity).setUpdatedDateTime(new Date());
         genericJPA.update(entity);

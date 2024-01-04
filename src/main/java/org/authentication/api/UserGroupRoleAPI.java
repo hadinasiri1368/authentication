@@ -18,7 +18,7 @@ public class UserGroupRoleAPI {
     private GenericService<UserGroupRole> service;
 
     @PostMapping(path = "/api/userGroupRole/add")
-    public Long addUserGroupRole(@RequestBody UserGroupRoleDto userGroupRoleDto, HttpServletRequest request) {
+    public Long addUserGroupRole(@RequestBody UserGroupRoleDto userGroupRoleDto, HttpServletRequest request) throws Exception{
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserGroupRole userGroupRole = new UserGroupRole();
         userGroupRole.setId(userGroupRoleDto.getId());
@@ -32,7 +32,7 @@ public class UserGroupRoleAPI {
         return userGroupRole.getId();
     }
     @PostMapping(path = "/api/userGroupRole/edit")
-    public Long editUserGroupRole(@RequestBody UserGroupRole userGroupRole, HttpServletRequest request) {
+    public Long editUserGroupRole(@RequestBody UserGroupRole userGroupRole, HttpServletRequest request) throws Exception{
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.update(userGroupRole ,userId);
         return userGroupRole.getId();

@@ -30,6 +30,8 @@ public class UserService {
     }
 
     public void update(User user, Long userId) {
+        if (CommonUtils.isNull(user.getId()))
+            throw new RuntimeException("id.not.found");
         user.setUpdatedUserId(userId);
         user.setUpdatedDateTime(new Date());
         genericJPA.update(user);

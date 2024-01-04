@@ -23,9 +23,9 @@ public class User extends BaseEntity {
     @JsonIgnore
     private String password;
     @Column(columnDefinition = "BIT", name = "is_admin")
-    private boolean isAdmin;
+    private Boolean isAdmin;
     @Column(columnDefinition = "BIT",name = "is_active")
-    private boolean isActive;
+    private Boolean isActive;
     @Column(columnDefinition = "DECIMAL", name = "f_person_id")
     private Long personId;
 }

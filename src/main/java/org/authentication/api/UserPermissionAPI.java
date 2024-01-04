@@ -19,7 +19,7 @@ public class UserPermissionAPI {
     private GenericService<UserPermission> service;
 
     @PostMapping(path = "/api/userPermission/add")
-    public Long addUserPermission(@RequestBody UserPermissionDto userPermissionDto, HttpServletRequest request) {
+    public Long addUserPermission(@RequestBody UserPermissionDto userPermissionDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserPermission userPermission = new UserPermission();
         userPermission.setId(userPermissionDto.getId());
@@ -33,7 +33,7 @@ public class UserPermissionAPI {
         return userPermission.getId();
     }
     @PostMapping(path = "/api/userPermission/edit")
-    public Long editUserPermission(@RequestBody UserPermission userPermission, HttpServletRequest request) {
+    public Long editUserPermission(@RequestBody UserPermission userPermission, HttpServletRequest request) throws Exception{
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.update(userPermission ,userId);
         return userPermission.getId();

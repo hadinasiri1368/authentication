@@ -17,14 +17,14 @@ public class RoleAPI {
     private GenericService<Role> service;
 
     @PostMapping(path = "/api/role/add")
-    public Long addRole(@RequestBody Role role, HttpServletRequest request) {
+    public Long addRole(@RequestBody Role role, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.insert(role, userId);
         return role.getId();
     }
 
     @PostMapping(path = "/api/role/edit")
-    public Long editRole(@RequestBody Role role, HttpServletRequest request) {
+    public Long editRole(@RequestBody Role role, HttpServletRequest request) throws Exception{
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.update(role, userId);
         return role.getId();
