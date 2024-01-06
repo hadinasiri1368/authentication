@@ -32,8 +32,16 @@ public class UserGroupRoleAPI {
         return userGroupRole.getId();
     }
     @PostMapping(path = "/api/userGroupRole/edit")
-    public Long editUserGroupRole(@RequestBody UserGroupRole userGroupRole, HttpServletRequest request) throws Exception{
+    public Long editUserGroupRole(@RequestBody UserGroupRoleDto userGroupRoleDto, HttpServletRequest request) throws Exception{
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
+        UserGroupRole userGroupRole = new UserGroupRole();
+        userGroupRole.setId(userGroupRoleDto.getId());
+        Role role = new Role();
+        role.setId(userGroupRoleDto.getRoleId());
+        UserGroup userGroup = new UserGroup();
+        userGroup.setId(userGroupRoleDto.getUserGroupId());
+        userGroupRole.setUserGroup(userGroup);
+        userGroupRole.setRole(role);
         service.update(userGroupRole ,userId);
         return userGroupRole.getId();
     }

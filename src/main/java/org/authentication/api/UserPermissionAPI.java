@@ -33,8 +33,16 @@ public class UserPermissionAPI {
         return userPermission.getId();
     }
     @PostMapping(path = "/api/userPermission/edit")
-    public Long editUserPermission(@RequestBody UserPermission userPermission, HttpServletRequest request) throws Exception{
+    public Long editUserPermission(@RequestBody UserPermissionDto userPermissionDto, HttpServletRequest request) throws Exception{
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
+        UserPermission userPermission = new UserPermission();
+        userPermission.setId(userPermissionDto.getId());
+        Permission permission = new Permission();
+        permission.setId(userPermissionDto.getPermissionId());
+        User user = new User();
+        user.setId(userPermissionDto.getUserId());
+        userPermission.setUser(user);
+        userPermission.setPermission(permission);
         service.update(userPermission ,userId);
         return userPermission.getId();
     }
@@ -51,7 +59,7 @@ public class UserPermissionAPI {
     }
 
     @GetMapping(path = "/api/userPermission")
-    public List<UserPermission> listUserRole() {
+    public List<UserPermission> listUserPermission() {
         return service.findAll(UserPermission.class);
     }
 }

@@ -20,7 +20,7 @@ public class UserGroupDetailAPI {
     private GenericService<UserGroupDetail> service;
 
     @PostMapping(path = "/api/userGroupDetail/add")
-    public Long addUserGroupDetail(@RequestBody UserGroupDetailDto userGroupDetailDto, HttpServletRequest request) throws Exception{
+    public Long addUserGroupDetail(@RequestBody UserGroupDetailDto userGroupDetailDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserGroupDetail userGroupDetail = new UserGroupDetail();
         userGroupDetail.setId(userGroupDetailDto.getId());
@@ -35,8 +35,16 @@ public class UserGroupDetailAPI {
     }
 
     @PostMapping(path = "/api/userGroupDetail/edit")
-    public Long editUserGroupDetail(@RequestBody UserGroupDetail userGroupDetail, HttpServletRequest request) throws Exception{
+    public Long editUserGroupDetail(@RequestBody UserGroupDetailDto userGroupDetailDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
+        UserGroupDetail userGroupDetail = new UserGroupDetail();
+        userGroupDetail.setId(userGroupDetailDto.getId());
+        User user = new User();
+        user.setId(userGroupDetailDto.getUserId());
+        UserGroup userGroup = new UserGroup();
+        userGroup.setId(userGroupDetailDto.getUserGroupId());
+        userGroupDetail.setUserGroup(userGroup);
+        userGroupDetail.setUser(user);
         service.update(userGroupDetail, userId);
         return userGroupDetail.getId();
     }

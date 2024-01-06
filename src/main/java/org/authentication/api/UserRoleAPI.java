@@ -33,8 +33,16 @@ public class UserRoleAPI {
     }
 
     @PostMapping(path = "/api/userRole/edit")
-    public Long editUserRole(@RequestBody UserRole userRole, HttpServletRequest request) throws Exception {
+    public Long editUserRole(@RequestBody UserRoleDto userRoleDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
+        UserRole userRole = new UserRole();
+        userRole.setId(userRoleDto.getId());
+        Role role = new Role();
+        role.setId(userRoleDto.getRoleId());
+        User user = new User();
+        user.setId(userRoleDto.getUserId());
+        userRole.setUser(user);
+        userRole.setRole(role);
         service.update(userRole, userId);
         return userRole.getId();
     }

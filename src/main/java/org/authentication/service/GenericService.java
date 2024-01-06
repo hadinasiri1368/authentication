@@ -8,6 +8,7 @@ import org.authentication.model.BaseEntity;
 import org.authentication.repository.JPA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
 import java.util.Date;
@@ -22,7 +23,7 @@ public class GenericService<Entity> {
     @Autowired
     private EntityManager entityManager;
 
-
+    @Transactional
     public void insert(Entity entity, Long userId) throws Exception {
         Method m = entity.getClass().getMethod("setId", Long.class);
         m.invoke(entity, (Long) null);
@@ -31,6 +32,7 @@ public class GenericService<Entity> {
         genericJPA.save(entity);
     }
 
+    @Transactional
     public void update(Entity entity, Long userId) throws Exception {
         Method m = entity.getClass().getMethod("getId");
         Long id = (Long) m.invoke(entity);
@@ -41,13 +43,19 @@ public class GenericService<Entity> {
         genericJPA.update(entity);
     }
 
+    @Transactional
     public void delete(Entity entity) {
         genericJPA.remove(entity);
     }
 
+    @Transactional
     public int delete(Long id, Class<Entity> aClass) {
         jakarta.persistence.Entity entity = aClass.getAnnotation(jakarta.persistence.Entity.class);
-        return entityManager.createQuery("delete from " + entity.name() + " where " + entity.name() + ".id=" + id).executeUpdate();
+        int returnValue=  entityManager.createQuery("delete  " + entity.name() + " o where o.id=:id").setParameter("id", id).executeUpdate();
+        if ( returnValue==0){
+            throw new RuntimeException("id.not.found");
+        }
+        return returnValue;
     }
 
     public Entity findOne(Class<Entity> aClass, Long id) {
