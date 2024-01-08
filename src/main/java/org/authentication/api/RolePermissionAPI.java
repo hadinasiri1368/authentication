@@ -44,7 +44,7 @@ public class RolePermissionAPI {
         permission.setId(rolePermissionDto.getPermissionId());
         rolePermission.setPermission(permission);
         rolePermission.setRole(role);
-        service.update(rolePermission, userId);
+        service.update(rolePermission, userId, RolePermission.class);
         return rolePermission.getId();
     }
 

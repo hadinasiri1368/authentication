@@ -43,7 +43,7 @@ public class UserPermissionAPI {
         user.setId(userPermissionDto.getUserId());
         userPermission.setUser(user);
         userPermission.setPermission(permission);
-        service.update(userPermission ,userId);
+        service.update(userPermission ,userId, UserPermission.class);
         return userPermission.getId();
     }
 

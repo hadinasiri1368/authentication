@@ -26,7 +26,7 @@ public class PermissionAPI {
     @PostMapping(path = "/api/permission/edit")
     public Long editPermission(@RequestBody Permission permission, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
-        service.update(permission, userId);
+        service.update(permission, userId, Permission.class);
         return permission.getId();
     }
 

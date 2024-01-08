@@ -24,9 +24,9 @@ public class RoleAPI {
     }
 
     @PostMapping(path = "/api/role/edit")
-    public Long editRole(@RequestBody Role role, HttpServletRequest request) throws Exception{
+    public Long editRole(@RequestBody Role role, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
-        service.update(role, userId);
+        service.update(role, userId, Role.class);
         return role.getId();
     }
 

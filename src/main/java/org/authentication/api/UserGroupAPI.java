@@ -26,7 +26,7 @@ public class UserGroupAPI {
     @PostMapping(path = "/api/userGroup/edit")
     public Long editUserGroup(@RequestBody UserGroup userGroup, HttpServletRequest request)throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
-        service.update(userGroup, userId);
+        service.update(userGroup, userId, UserGroup.class);
         return userGroup.getId();
     }
 

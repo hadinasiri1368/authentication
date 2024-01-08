@@ -42,7 +42,7 @@ public class UserGroupRoleAPI {
         userGroup.setId(userGroupRoleDto.getUserGroupId());
         userGroupRole.setUserGroup(userGroup);
         userGroupRole.setRole(role);
-        service.update(userGroupRole ,userId);
+        service.update(userGroupRole ,userId, UserGroupRole.class);
         return userGroupRole.getId();
     }
 

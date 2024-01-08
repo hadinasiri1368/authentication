@@ -33,10 +33,12 @@ public class GenericService<Entity> {
     }
 
     @Transactional
-    public void update(Entity entity, Long userId) throws Exception {
+    public void update(Entity entity, Long userId, Class<Entity> aClass) throws Exception {
         Method m = entity.getClass().getMethod("getId");
         Long id = (Long) m.invoke(entity);
         if (CommonUtils.isNull(id))
+            throw new RuntimeException("id.not.found");
+        if (CommonUtils.isNull(findOne(aClass, id)))
             throw new RuntimeException("id.not.found");
         ((BaseEntity) entity).setUpdatedUserId(userId);
         ((BaseEntity) entity).setUpdatedDateTime(new Date());

@@ -45,7 +45,7 @@ public class UserGroupDetailAPI {
         userGroup.setId(userGroupDetailDto.getUserGroupId());
         userGroupDetail.setUserGroup(userGroup);
         userGroupDetail.setUser(user);
-        service.update(userGroupDetail, userId);
+        service.update(userGroupDetail, userId, UserGroupDetail.class);
         return userGroupDetail.getId();
     }
 

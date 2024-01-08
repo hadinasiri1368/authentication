@@ -43,7 +43,7 @@ public class UserRoleAPI {
         user.setId(userRoleDto.getUserId());
         userRole.setUser(user);
         userRole.setRole(role);
-        service.update(userRole, userId);
+        service.update(userRole, userId, UserRole.class);
         return userRole.getId();
     }
 
