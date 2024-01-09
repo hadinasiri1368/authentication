@@ -22,14 +22,14 @@ public class UserAPI {
     private UserService service;
 
     @PostMapping(path = "/api/user/add")
-    public Long addUser(@RequestBody User user, HttpServletRequest request) {
+    public Long addUser(@RequestBody User user, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.insert(user, userId);
         return user.getId();
     }
 
     @PostMapping(path = "/api/user/edit")
-    public Long editUser(@RequestBody User user, HttpServletRequest request) {
+    public Long editUser(@RequestBody User user, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.update(user, userId);
         return user.getId();

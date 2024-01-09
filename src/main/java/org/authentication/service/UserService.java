@@ -21,7 +21,7 @@ public class UserService {
     @Autowired
     private EntityManager entityManager;
 
-    public void insert(User user, Long userId) {
+    public void insert(User user, Long userId) throws Exception {
         user.setId(null);
         user.setInsertedUserId(userId);
         user.setInsertedDateTime(new Date());
@@ -29,8 +29,10 @@ public class UserService {
         genericJPA.save(user);
     }
 
-    public void update(User user, Long userId) {
+    public void update(User user, Long userId) throws Exception {
         if (CommonUtils.isNull(user.getId()))
+            throw new RuntimeException("id.not.found");
+        if (CommonUtils.isNull(findOne(User.class, user.getId())))
             throw new RuntimeException("id.not.found");
         user.setUpdatedUserId(userId);
         user.setUpdatedDateTime(new Date());
