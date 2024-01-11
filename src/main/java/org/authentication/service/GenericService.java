@@ -1,6 +1,5 @@
 package org.authentication.service;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.authentication.common.CommonUtils;
@@ -27,6 +26,7 @@ public class GenericService<Entity> {
     public void insert(Entity entity, Long userId) throws Exception {
         Method m = entity.getClass().getMethod("setId", Long.class);
         m.invoke(entity, (Long) null);
+        CommonUtils.setNull(entity);
         ((BaseEntity) entity).setInsertedUserId(userId);
         ((BaseEntity) entity).setInsertedDateTime(new Date());
         genericJPA.save(entity);
@@ -40,6 +40,7 @@ public class GenericService<Entity> {
             throw new RuntimeException("id.not.found");
         if (CommonUtils.isNull(findOne(aClass, id)))
             throw new RuntimeException("id.not.found");
+        CommonUtils.setNull(entity);
         ((BaseEntity) entity).setUpdatedUserId(userId);
         ((BaseEntity) entity).setUpdatedDateTime(new Date());
         genericJPA.update(entity);
@@ -53,8 +54,8 @@ public class GenericService<Entity> {
     @Transactional
     public int delete(Long id, Class<Entity> aClass) {
         jakarta.persistence.Entity entity = aClass.getAnnotation(jakarta.persistence.Entity.class);
-        int returnValue=  entityManager.createQuery("delete  " + entity.name() + " o where o.id=:id").setParameter("id", id).executeUpdate();
-        if ( returnValue==0){
+        int returnValue = entityManager.createQuery("delete  " + entity.name() + " o where o.id=:id").setParameter("id", id).executeUpdate();
+        if (returnValue == 0) {
             throw new RuntimeException("id.not.found");
         }
         return returnValue;

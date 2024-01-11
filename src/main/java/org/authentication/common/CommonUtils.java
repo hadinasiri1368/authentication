@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,5 +118,19 @@ public class CommonUtils {
         long count = 0;
         count = permissionList.stream().filter(a -> a.getUrl().toLowerCase().equals(url.toLowerCase())).count();
         return count > 0 ? true : false;
+    }
+
+    public static void setNull(Object entity) throws Exception {
+        Class cls = Class.forName(entity.getClass().getName());
+        Field[] fields = cls.getDeclaredFields();
+        for (Field field : fields) {
+            String name = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1, field.getName().length());
+            Method m = entity.getClass().getMethod("get" + name);
+            Object o = m.invoke(entity);
+            if (CommonUtils.isNull(o)) {
+                Method method = entity.getClass().getMethod("set" + name, field.getType());
+                method.invoke(entity, field.getType().cast(null));
+            }
+        }
     }
 }

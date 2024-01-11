@@ -14,12 +14,14 @@ public class JPA<ENTITY, ID> {
     private EntityManager entityManager;
 
     @Transactional
-    public void save(ENTITY entity) {
+    public void save(ENTITY entity) throws Exception {
+        CommonUtils.setNull(entity);
         entityManager.persist(entity);
     }
 
     @Transactional
-    public void update(ENTITY entity) {
+    public void update(ENTITY entity) throws Exception {
+        CommonUtils.setNull(entity);
         entityManager.merge(entity);
     }
 
