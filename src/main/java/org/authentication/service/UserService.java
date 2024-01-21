@@ -86,14 +86,6 @@ public class UserService {
         return genericJPA.listByQuery(query, param);
     }
 
-    public List<User> listAllColleague(List<Long> userId) {
-        String hql = "select u from user u where u.personId in (select entity.personId from user entity where entity.id in (:userId))";
-        Query query = entityManager.createQuery(hql);
-        Map<String, Object> param = new HashMap<>();
-        param.put("userId", userId);
-        return genericJPA.listByQuery(query, param);
-    }
-
     public List<Permission> listAllPermission(Long userId) {
         String hql = "select p from userPermission up \n" +
                 "    inner join permission p on p.id=up.permission.id \n" +
