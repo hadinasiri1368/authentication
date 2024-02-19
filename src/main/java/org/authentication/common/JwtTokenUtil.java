@@ -60,14 +60,21 @@ public class JwtTokenUtil implements Serializable {
         return expiration.before(new Date());
     }
 
-    public static String generateToken(Object o) {
+    public static String generateToken(User o) throws Exception {
         Map<String, Object> claims = new HashMap<>();
+        String oldToken = TokenManager.getInstance().getToken(o.getId());
+        if (!CommonUtils.isNull(oldToken)) {
+            if (!isTokenExpired(oldToken))
+                return oldToken;
+            TokenManager.getInstance().removeTokenByUserId(o.getId());
+        }
         claims.put("tokenDate", o);
+        String token = doGenerateToken(claims);
+        TokenManager.getInstance().setToken(o.getId(), token);
         return doGenerateToken(claims);
     }
 
     private static String doGenerateToken(Map<String, Object> claims) {
-
         return Jwts.builder().setClaims(claims).setSubject("token").setIssuedAt(new Date())
                 .setExpiration(DateUtils.addMinutes(new Date(), expirationMinutes))
                 .signWith(SignatureAlgorithm.HS512, secret).compact();

@@ -66,6 +66,8 @@ public class CommonUtils {
         try {
             if (token == null || token.isBlank() || token.isEmpty())
                 return "token is null";
+            if(!TokenManager.getInstance().HasToken(token))
+                return "token is not exists";
             if (!JwtTokenUtil.validateToken(token))
                 return "token is not valid";
             Map map = JwtTokenUtil.getUsernameFromToken(token);

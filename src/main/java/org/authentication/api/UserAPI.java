@@ -4,11 +4,15 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.authentication.common.CommonUtils;
 import org.authentication.common.JwtTokenUtil;
+import org.authentication.common.TokenManager;
 import org.authentication.dto.ChangePasswordDto;
+import org.authentication.dto.LoginDto;
 import org.authentication.model.Role;
 import org.authentication.model.User;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,5 +63,11 @@ public class UserAPI {
     @PostMapping(path = "/api/user/changePassword")
     public int changePassword(@RequestBody ChangePasswordDto changePasswordDto, HttpServletRequest request) {
         return service.changePassword(JwtTokenUtil.getUserFromToken(CommonUtils.getToken(request)), changePasswordDto);
+    }
+
+    @GetMapping(path = "/api/user/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        TokenManager.getInstance().removeTokenByUserId(CommonUtils.getUserId(CommonUtils.getToken(request)));
+        return new ResponseEntity("user logout", HttpStatus.OK);
     }
 }

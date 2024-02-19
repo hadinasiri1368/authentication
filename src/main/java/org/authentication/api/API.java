@@ -20,7 +20,7 @@ public class API {
     private UserService userService;
 
     @PostMapping(path = "/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) throws Exception {
         User user = userService.findOne(loginDto.getUsername(), loginDto.getPassword());
         if (user == null)
             return new ResponseEntity("login failed", HttpStatus.BAD_REQUEST);
