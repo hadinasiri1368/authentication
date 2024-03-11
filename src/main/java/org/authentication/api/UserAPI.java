@@ -64,10 +64,4 @@ public class UserAPI {
     public int changePassword(@RequestBody ChangePasswordDto changePasswordDto, HttpServletRequest request) {
         return service.changePassword(JwtTokenUtil.getUserFromToken(CommonUtils.getToken(request)), changePasswordDto);
     }
-
-    @GetMapping(path = "/api/user/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
-        TokenManager.getInstance().removeTokenByUserId(CommonUtils.getUserId(CommonUtils.getToken(request)));
-        return new ResponseEntity("user logout", HttpStatus.OK);
-    }
 }
