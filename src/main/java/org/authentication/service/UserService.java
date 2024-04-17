@@ -3,7 +3,7 @@ package org.authentication.service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.authentication.common.CommonUtils;
-import org.authentication.dto.ChangePasswordDto;
+import org.authentication.dto.RequestDto.ChangePasswordDto;
 import org.authentication.model.Permission;
 import org.authentication.model.Role;
 import org.authentication.model.User;

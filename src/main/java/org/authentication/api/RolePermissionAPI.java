@@ -3,7 +3,7 @@ package org.authentication.api;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.authentication.common.CommonUtils;
-import org.authentication.dto.RolePermissionDto;
+import org.authentication.dto.RequestDto.RolePermissionDto;
 import org.authentication.model.Permission;
 import org.authentication.model.Role;
 import org.authentication.model.RolePermission;

@@ -3,7 +3,7 @@ package org.authentication.api;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.authentication.common.CommonUtils;
-import org.authentication.dto.UserGroupDetailDto;
+import org.authentication.dto.RequestDto.UserGroupDetailDto;
 import org.authentication.model.User;
 import org.authentication.model.UserGroup;
 import org.authentication.model.UserGroupDetail;

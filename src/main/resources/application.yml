@@ -5,7 +5,7 @@ spring:
     name: "AUTHENTICATION"
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://;serverName=172.30.23.136;databaseName=way;encrypt=true;trustServerCertificate=true;
+    url: jdbc:sqlserver://;serverName=localhost;databaseName=way;encrypt=true;trustServerCertificate=true;
     username: sa
     password: asd123!@#
   jpa:
@@ -22,3 +22,5 @@ eureka:
     service-url:
       defaultZone: http://localhost:8080/eureka
 
+serviceUrl:
+  transport: http://localhost:8082

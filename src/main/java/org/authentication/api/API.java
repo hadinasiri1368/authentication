@@ -2,8 +2,9 @@ package org.authentication.api;
 
 import org.authentication.common.CommonUtils;
 import org.authentication.common.JwtTokenUtil;
-import org.authentication.dto.LoginDto;
-import org.authentication.model.Permission;
+import org.authentication.dto.RequestDto.LoginDto;
+import org.authentication.dto.ResponseDto.LoginData;
+import org.authentication.dto.ResponseDto.Person;
 import org.authentication.model.User;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -20,11 +20,15 @@ public class API {
     private UserService userService;
 
     @PostMapping(path = "/login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) throws Exception {
+    public ResponseEntity<LoginData> login(@RequestBody LoginDto loginDto) throws Exception {
         User user = userService.findOne(loginDto.getUsername(), loginDto.getPassword());
         if (user == null)
             return new ResponseEntity("login failed", HttpStatus.BAD_REQUEST);
-        return new ResponseEntity(JwtTokenUtil.generateToken(user), HttpStatus.OK);
+        String token = JwtTokenUtil.generateToken(user);
+        Person person = CommonUtils.getPerson(user.getPersonId(), token);
+        if (CommonUtils.isNull(person))
+            return new ResponseEntity("person doesn't has info", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(LoginData.builder().isActive(user.getIsActive()).username(user.getUsername()).name(person.getName()).family(person.getFamily()).token(token).build(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/getUserId")

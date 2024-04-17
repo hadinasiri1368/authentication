@@ -3,7 +3,7 @@ package org.authentication.api;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.authentication.common.CommonUtils;
-import org.authentication.dto.UserRoleDto;
+import org.authentication.dto.RequestDto.UserRoleDto;
 import org.authentication.model.*;
 import org.authentication.service.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;

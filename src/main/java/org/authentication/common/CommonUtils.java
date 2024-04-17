@@ -1,22 +1,26 @@
 package org.authentication.common;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.authentication.dto.ResponseDto.Person;
 import org.authentication.model.Permission;
 import org.authentication.model.User;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class CommonUtils {
     private static UserService userService;
 
@@ -66,7 +70,7 @@ public class CommonUtils {
         try {
             if (token == null || token.isBlank() || token.isEmpty())
                 return "token is null";
-            if(!TokenManager.getInstance().HasToken(token))
+            if (!TokenManager.getInstance().HasToken(token))
                 return "token is not exists";
             if (!JwtTokenUtil.validateToken(token))
                 return "token is not valid";
@@ -134,5 +138,27 @@ public class CommonUtils {
                 method.invoke(entity, field.getType().cast(null));
             }
         }
+    }
+
+    public static Person getPerson(Long id, String token) {
+        try {
+            String url = ApplicationProperties.getServiceUrlTransport() + "/api/person/" + id;
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(token);
+            return callService(url, HttpMethod.GET, headers, null, Person.class, null);
+        } catch (Exception e) {
+            log.error("get person info error: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static <T> T callService(String url, HttpMethod httpMethod, HttpHeaders headers, Object body, Class<T> aClass, Map<String, Object> params) throws Exception {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity httpEntity = new HttpEntity(body, headers);
+        if (CommonUtils.isNull(params))
+            params = new HashMap<>();
+        HttpEntity<T> response = restTemplate.exchange(url, httpMethod, httpEntity, aClass, params);
+        return response.getBody();
     }
 }

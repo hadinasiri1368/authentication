@@ -4,15 +4,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import org.authentication.common.CommonUtils;
 import org.authentication.common.JwtTokenUtil;
-import org.authentication.common.TokenManager;
-import org.authentication.dto.ChangePasswordDto;
-import org.authentication.dto.LoginDto;
+import org.authentication.dto.RequestDto.ChangePasswordDto;
 import org.authentication.model.Role;
 import org.authentication.model.User;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
