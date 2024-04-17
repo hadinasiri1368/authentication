@@ -72,7 +72,7 @@ public class JwtTokenUtil implements Serializable {
         claims.put("tokenDate", o);
         String token = doGenerateToken(claims);
         TokenManager.getInstance().setToken(o.getId(), token);
-        return doGenerateToken(claims);
+        return token;
     }
 
     private static String doGenerateToken(Map<String, Object> claims) {
