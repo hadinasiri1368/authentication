@@ -43,22 +43,26 @@ public class JwtTokenUtil implements Serializable {
         return mapper.convertValue((Map) claims.get("tokenDate"), User.class);
     }
 
-    private static Date getExpirationDateFromToken(String token) {
+    private static Date getExpirationDateFromToken(String token) throws Exception {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    private static <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+    private static <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) throws Exception {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
 
-    private static Claims getAllClaimsFromToken(String token) {
+    private static Claims getAllClaimsFromToken(String token) throws Exception {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token.replaceAll("Bearer ", "")).getBody();
     }
 
     private static Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
+        try {
+            final Date expiration = getExpirationDateFromToken(token);
+            return expiration.before(new Date());
+        } catch (Exception e) {
+            return true;
+        }
     }
 
     public static String generateToken(User o) throws Exception {

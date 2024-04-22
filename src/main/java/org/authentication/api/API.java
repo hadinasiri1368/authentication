@@ -28,7 +28,7 @@ public class API {
         Person person = CommonUtils.getPerson(user.getPersonId(), token);
         if (CommonUtils.isNull(person))
             return new ResponseEntity("person doesn't has info", HttpStatus.BAD_REQUEST);
-        return new ResponseEntity(LoginData.builder().isActive(user.getIsActive()).username(user.getUsername()).name(person.getName()).family(person.getFamily()).token(token).build(), HttpStatus.OK);
+        return new ResponseEntity(LoginData.builder().isAdmin(user.getIsAdmin()).isActive(user.getIsActive()).username(user.getUsername()).name(person.getName()).family(person.getFamily()).token(token).build(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/getUserId")
