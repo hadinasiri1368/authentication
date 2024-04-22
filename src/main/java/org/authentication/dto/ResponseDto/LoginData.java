@@ -14,5 +14,6 @@ public class LoginData {
     private String name;
     private String family;
     private boolean isActive;
+    private boolean isAdmin;
     private String token;
 }
