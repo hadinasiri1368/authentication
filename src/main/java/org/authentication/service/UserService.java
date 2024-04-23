@@ -1,12 +1,11 @@
 package org.authentication.service;
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.authentication.common.CommonUtils;
 import org.authentication.dto.RequestDto.ChangePasswordDto;
-import org.authentication.model.Permission;
-import org.authentication.model.Role;
-import org.authentication.model.User;
+import org.authentication.model.*;
 import org.authentication.repository.JPA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -120,5 +119,26 @@ public class UserService {
         Query query = entityManager.createQuery("update user u set u.password=:pass where u.id=:userId");
         return genericJPA.executeUpdate(query, param);
     }
+    public List<UserRole> findUserRole( Long userId){
+        Query query = entityManager.createQuery("select u  from userRole u where u.user.id=:userId");
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", userId);
+        return genericJPA.listByQuery(query, param);
+    }
+
+    public List<UserGroupDetail> findUserGroupDetail(Long userId){
+        Query query = entityManager.createQuery("select u  from userGroupDetail u where u.user.id=:userId");
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", userId);
+        return genericJPA.listByQuery(query, param);
+    }
+
+    public List<UserPermission> findUserPermission(Long userId){
+        Query query = entityManager.createQuery("select u  from userPermission u where u.user.id=:userId");
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", userId);
+        return genericJPA.listByQuery(query, param);
+    }
+
 
 }

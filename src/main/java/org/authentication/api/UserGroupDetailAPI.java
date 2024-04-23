@@ -8,7 +8,7 @@ import org.authentication.model.User;
 import org.authentication.model.UserGroup;
 import org.authentication.model.UserGroupDetail;
 import org.authentication.service.GenericService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.authentication.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +16,13 @@ import java.util.List;
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
 public class UserGroupDetailAPI {
-    @Autowired
-    private GenericService<UserGroupDetail> service;
+    private final GenericService<UserGroupDetail> service;
+    private final UserService userService;
+
+    public UserGroupDetailAPI(GenericService<UserGroupDetail> service, UserService userService) {
+        this.service = service;
+        this.userService = userService;
+    }
 
     @PostMapping(path = "/api/userGroupDetail/add")
     public Long addUserGroupDetail(@RequestBody UserGroupDetailDto userGroupDetailDto, HttpServletRequest request) throws Exception {
@@ -63,6 +68,10 @@ public class UserGroupDetailAPI {
     @GetMapping(path = "/api/userGroupDetail")
     public List<UserGroupDetail> listUserGroupDetail() {
         return service.findAll(UserGroupDetail.class);
+    }
+    @GetMapping(path = "/api/userGroupDetailPerUser/{userId}")
+    public List<UserGroupDetail> userGroupDetails(@PathVariable Long userId) {
+        return userService.findUserGroupDetail(userId);
     }
 
 }

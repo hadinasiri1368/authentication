@@ -2,6 +2,7 @@ package org.authentication.api;
 
 import org.authentication.common.CommonUtils;
 import org.authentication.common.JwtTokenUtil;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.authentication.dto.RequestDto.LoginDto;
 import org.authentication.dto.ResponseDto.LoginData;
 import org.authentication.dto.ResponseDto.Person;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
+@SecurityRequirement(name = "Bearer Authentication")
 public class API {
     @Autowired
     private UserService userService;

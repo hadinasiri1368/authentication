@@ -6,7 +6,7 @@ import org.authentication.common.CommonUtils;
 import org.authentication.dto.RequestDto.UserPermissionDto;
 import org.authentication.model.*;
 import org.authentication.service.GenericService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.authentication.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,8 +14,14 @@ import java.util.List;
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
 public class UserPermissionAPI {
-    @Autowired
-    private GenericService<UserPermission> service;
+    private final GenericService<UserPermission> service;
+
+    private final UserService userService;
+
+    public UserPermissionAPI(UserService userService, GenericService<UserPermission> service) {
+        this.userService = userService;
+        this.service = service;
+    }
 
     @PostMapping(path = "/api/userPermission/add")
     public Long addUserPermission(@RequestBody UserPermissionDto userPermissionDto, HttpServletRequest request) throws Exception {
@@ -31,8 +37,9 @@ public class UserPermissionAPI {
         service.insert(userPermission, userId);
         return userPermission.getId();
     }
+
     @PostMapping(path = "/api/userPermission/edit")
-    public Long editUserPermission(@RequestBody UserPermissionDto userPermissionDto, HttpServletRequest request) throws Exception{
+    public Long editUserPermission(@RequestBody UserPermissionDto userPermissionDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserPermission userPermission = new UserPermission();
         userPermission.setId(userPermissionDto.getId());
@@ -42,7 +49,7 @@ public class UserPermissionAPI {
         user.setId(userPermissionDto.getUserId());
         userPermission.setUser(user);
         userPermission.setPermission(permission);
-        service.update(userPermission ,userId, UserPermission.class);
+        service.update(userPermission, userId, UserPermission.class);
         return userPermission.getId();
     }
 
@@ -60,5 +67,10 @@ public class UserPermissionAPI {
     @GetMapping(path = "/api/userPermission")
     public List<UserPermission> listUserPermission() {
         return service.findAll(UserPermission.class);
+    }
+
+    @GetMapping(path = "/api/userPermissionPerUser/{userId}")
+    public List<UserPermission> userRoles(@PathVariable Long userId) {
+        return userService.findUserPermission(userId);
     }
 }
