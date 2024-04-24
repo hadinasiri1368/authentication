@@ -121,7 +121,7 @@ public class CommonUtils {
             return true;
         List<Permission> permissionList = userService.listAllPermission(user.getId());
         long count = 0;
-        count = permissionList.stream().filter(a -> a.getUrl().toLowerCase().equals(url.toLowerCase())).count();
+        count = permissionList.stream().filter(a -> CommonUtils.isEqualUrl(a.getUrl().toLowerCase(), url.toLowerCase())).count();
         return count > 0 ? true : false;
     }
 
@@ -159,5 +159,22 @@ public class CommonUtils {
             params = new HashMap<>();
         HttpEntity<T> response = restTemplate.exchange(url, httpMethod, httpEntity, aClass, params);
         return response.getBody();
+    }
+
+    public static boolean isEqualUrl(String permissionUrl, String requestUrl) {
+        String[] permissionUrlArray = permissionUrl.split("/");
+        String[] requestUrlArray = permissionUrl.split("/");
+        if (permissionUrlArray.length != requestUrlArray.length)
+            return false;
+        for (int i = 0; i < permissionUrlArray.length; i++) {
+            if (permissionUrlArray[i].contains("{")) {
+                if (isNull(requestUrlArray[i]))
+                    return false;
+            } else
+                continue;
+            if (permissionUrlArray[i].equals(requestUrlArray[i]))
+                return false;
+        }
+        return true;
     }
 }
