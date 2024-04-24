@@ -1,18 +1,22 @@
 package org.authentication.api;
 
 import org.authentication.common.CommonUtils;
+import org.authentication.common.Const;
 import org.authentication.common.JwtTokenUtil;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.authentication.dto.RequestDto.LoginDto;
 import org.authentication.dto.ResponseDto.LoginData;
 import org.authentication.dto.ResponseDto.Person;
+import org.authentication.model.Role;
 import org.authentication.model.User;
+import org.authentication.model.UserRole;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -30,6 +34,19 @@ public class API {
         Person person = CommonUtils.getPerson(user.getPersonId(), token);
         if (CommonUtils.isNull(person))
             return new ResponseEntity("person doesn't has info", HttpStatus.BAD_REQUEST);
+        List<Role> userRoles = userService.listAllRole(user.getId());
+        if (!user.getIsAdmin()) {
+            if (loginDto.getUserType() == Const.USER_TYPE_EMPLOYEE) {
+                if (userRoles.stream().filter(item -> item.getId().equals(Const.USER_TYPE_EMPLOYEE)).count() == 0)
+                    return new ResponseEntity("dont have permission", HttpStatus.BAD_REQUEST);
+            } else if (loginDto.getUserType() == Const.USER_TYPE_DRIVER) {
+                if (userRoles.stream().filter(item -> item.getId().equals(Const.USER_TYPE_DRIVER)).count() == 0)
+                    return new ResponseEntity("dont have permission", HttpStatus.BAD_REQUEST);
+            } else if (loginDto.getUserType() == Const.USER_TYPE_CUSTOMER) {
+                if (userRoles.stream().filter(item -> item.getId().equals(Const.USER_TYPE_CUSTOMER)).count() == 0)
+                    return new ResponseEntity("dont have permission", HttpStatus.BAD_REQUEST);
+            }
+        }
         return new ResponseEntity(LoginData.builder().isAdmin(user.getIsAdmin()).isActive(user.getIsActive()).username(user.getUsername()).name(person.getName()).family(person.getFamily()).token(token).build(), HttpStatus.OK);
     }
 
