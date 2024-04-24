@@ -37,13 +37,13 @@ public class API {
         List<Role> userRoles = userService.listAllRole(user.getId());
         if (!user.getIsAdmin()) {
             if (loginDto.getUserType() == Const.USER_TYPE_EMPLOYEE) {
-                if (userRoles.stream().filter(item -> item.getId().equals(Const.USER_TYPE_EMPLOYEE)).count() == 0)
+                if (userRoles.stream().filter(item -> item.getId() == Const.USER_TYPE_EMPLOYEE.intValue()).count() == 0)
                     return new ResponseEntity("dont have permission", HttpStatus.BAD_REQUEST);
             } else if (loginDto.getUserType() == Const.USER_TYPE_DRIVER) {
-                if (userRoles.stream().filter(item -> item.getId().equals(Const.USER_TYPE_DRIVER)).count() == 0)
+                if (userRoles.stream().filter(item -> item.getId() == Const.USER_TYPE_DRIVER.intValue()).count() == 0)
                     return new ResponseEntity("dont have permission", HttpStatus.BAD_REQUEST);
             } else if (loginDto.getUserType() == Const.USER_TYPE_CUSTOMER) {
-                if (userRoles.stream().filter(item -> item.getId().equals(Const.USER_TYPE_CUSTOMER)).count() == 0)
+                if (userRoles.stream().filter(item -> item.getId() == Const.USER_TYPE_CUSTOMER.intValue()).count() == 0)
                     return new ResponseEntity("dont have permission", HttpStatus.BAD_REQUEST);
             }
         }
