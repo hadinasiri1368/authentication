@@ -7,6 +7,7 @@ import org.authentication.dto.RequestDto.UserRoleDto;
 import org.authentication.model.*;
 import org.authentication.service.GenericService;
 import org.authentication.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,14 +15,10 @@ import java.util.List;
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
 public class UserRoleAPI {
-    private final GenericService<UserRole> service;
-
-    private final UserService userService;
-
-    public UserRoleAPI(GenericService<UserRole> service, UserService userService) {
-        this.service = service;
-        this.userService = userService;
-    }
+    @Autowired
+    private GenericService<UserRole> service;
+    @Autowired
+    private UserService userService;
 
     @PostMapping(path = "/api/userRole/add")
     public Long addUserRole(@RequestBody UserRoleDto userRoleDto, HttpServletRequest request) throws Exception {

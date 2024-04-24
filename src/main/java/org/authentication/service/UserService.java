@@ -139,6 +139,4 @@ public class UserService {
         param.put("userId", userId);
         return genericJPA.listByQuery(query, param);
     }
-
-
 }
