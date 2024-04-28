@@ -23,14 +23,14 @@ public class PermissionAPI {
         return permission.getId();
     }
 
-    @PostMapping(path = "/api/permission/edit")
+    @PutMapping(path = "/api/permission/edit")
     public Long editPermission(@RequestBody Permission permission, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.update(permission, userId, Permission.class);
         return permission.getId();
     }
 
-    @PostMapping(path = "/api/permission/remove/{id}")
+    @DeleteMapping(path = "/api/permission/remove/{id}")
     public Long removePermission(@PathVariable Long id) {
         service.delete(id, Permission.class);
         return id;

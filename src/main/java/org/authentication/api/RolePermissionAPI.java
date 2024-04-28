@@ -33,7 +33,7 @@ public class RolePermissionAPI {
         return rolePermission.getId();
     }
 
-    @PostMapping(path = "/api/rolePermission/edit")
+    @PutMapping(path = "/api/rolePermission/edit")
     public Long editRolePermission(@RequestBody RolePermissionDto rolePermissionDto, HttpServletRequest request) throws Exception{
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         RolePermission rolePermission = new RolePermission();
@@ -48,7 +48,7 @@ public class RolePermissionAPI {
         return rolePermission.getId();
     }
 
-    @PostMapping(path = "/api/rolePermission/remove/{id}")
+    @DeleteMapping(path = "/api/rolePermission/remove/{id}")
     public Long removeRolePermission(@PathVariable Long id) {
         service.delete(id, RolePermission.class);
         return id;

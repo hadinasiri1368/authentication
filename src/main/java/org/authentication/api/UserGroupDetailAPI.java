@@ -37,7 +37,7 @@ public class UserGroupDetailAPI {
         return userGroupDetail.getId();
     }
 
-    @PostMapping(path = "/api/userGroupDetail/edit")
+    @PutMapping(path = "/api/userGroupDetail/edit")
     public Long editUserGroupDetail(@RequestBody UserGroupDetailDto userGroupDetailDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserGroupDetail userGroupDetail = new UserGroupDetail();
@@ -52,7 +52,7 @@ public class UserGroupDetailAPI {
         return userGroupDetail.getId();
     }
 
-    @PostMapping(path = "/api/userGroupDetail/remove/{id}")
+    @DeleteMapping(path = "/api/userGroupDetail/remove/{id}")
     public Long removeUserGroupDetail(@PathVariable Long id) {
         service.delete(id, UserGroupDetail.class);
         return id;
@@ -67,6 +67,7 @@ public class UserGroupDetailAPI {
     public List<UserGroupDetail> listUserGroupDetail() {
         return service.findAll(UserGroupDetail.class);
     }
+
     @GetMapping(path = "/api/userGroupDetailPerUser/{userId}")
     public List<UserGroupDetail> userGroupDetails(@PathVariable Long userId) {
         return userService.findUserGroupDetail(userId);

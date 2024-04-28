@@ -26,14 +26,14 @@ public class UserAPI {
         return user.getId();
     }
 
-    @PostMapping(path = "/api/user/edit")
+    @PutMapping(path = "/api/user/edit")
     public Long editUser(@RequestBody User user, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.update(user, userId);
         return user.getId();
     }
 
-    @PostMapping(path = "/api/user/remove/{id}")
+    @DeleteMapping(path = "/api/user/remove/{id}")
     public Long removeUser(@PathVariable Long id) {
         service.delete(id);
         return id;
