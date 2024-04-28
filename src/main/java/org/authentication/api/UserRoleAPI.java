@@ -35,7 +35,7 @@ public class UserRoleAPI {
         return userRole.getId();
     }
 
-    @PostMapping(path = "/api/userRole/edit")
+    @PutMapping(path = "/api/userRole/edit")
     public Long editUserRole(@RequestBody UserRoleDto userRoleDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserRole userRole = new UserRole();
@@ -50,7 +50,7 @@ public class UserRoleAPI {
         return userRole.getId();
     }
 
-    @PostMapping(path = "/api/userRole/remove/{id}")
+    @DeleteMapping(path = "/api/userRole/remove/{id}")
     public Long removeUserRole(@PathVariable Long id) {
         service.delete(id, UserRole.class);
         return id;

@@ -23,14 +23,14 @@ public class RoleAPI {
         return role.getId();
     }
 
-    @PostMapping(path = "/api/role/edit")
+    @PutMapping(path = "/api/role/edit")
     public Long editRole(@RequestBody Role role, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.update(role, userId, Role.class);
         return role.getId();
     }
 
-    @PostMapping(path = "/api/role/remove/{id}")
+    @DeleteMapping(path = "/api/role/remove/{id}")
     public Long removeRole(@PathVariable Long id) {
         service.delete(id, Role.class);
         return id;

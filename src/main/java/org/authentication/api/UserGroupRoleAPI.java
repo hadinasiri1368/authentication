@@ -31,7 +31,7 @@ public class UserGroupRoleAPI {
         service.insert(userGroupRole, userId);
         return userGroupRole.getId();
     }
-    @PostMapping(path = "/api/userGroupRole/edit")
+    @PutMapping(path = "/api/userGroupRole/edit")
     public Long editUserGroupRole(@RequestBody UserGroupRoleDto userGroupRoleDto, HttpServletRequest request) throws Exception{
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserGroupRole userGroupRole = new UserGroupRole();
@@ -46,7 +46,7 @@ public class UserGroupRoleAPI {
         return userGroupRole.getId();
     }
 
-    @PostMapping(path = "/api/userGroupRole/remove/{id}")
+    @DeleteMapping(path = "/api/userGroupRole/remove/{id}")
     public Long removeUserGroupRole(@PathVariable Long id) {
         service.delete(id, UserGroupRole.class);
         return id;

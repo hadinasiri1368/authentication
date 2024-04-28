@@ -36,7 +36,7 @@ public class UserPermissionAPI {
         return userPermission.getId();
     }
 
-    @PostMapping(path = "/api/userPermission/edit")
+    @PutMapping (path = "/api/userPermission/edit")
     public Long editUserPermission(@RequestBody UserPermissionDto userPermissionDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserPermission userPermission = new UserPermission();
@@ -51,7 +51,7 @@ public class UserPermissionAPI {
         return userPermission.getId();
     }
 
-    @PostMapping(path = "/api/userPermission/remove/{id}")
+    @DeleteMapping(path = "/api/userPermission/remove/{id}")
     public Long removeUserPermission(@PathVariable Long id) {
         service.delete(id, UserPermission.class);
         return id;
@@ -68,7 +68,7 @@ public class UserPermissionAPI {
     }
 
     @GetMapping(path = "/api/userPermissionPerUser/{userId}")
-    public List<UserPermission> userRoles(@PathVariable Long userId) {
+    public List<UserPermission> userPermissions(@PathVariable Long userId) {
         return userService.findUserPermission(userId);
     }
 }
