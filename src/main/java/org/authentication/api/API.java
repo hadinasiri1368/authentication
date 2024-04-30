@@ -10,6 +10,7 @@ import org.authentication.dto.ResponseDto.Person;
 import org.authentication.model.Role;
 import org.authentication.model.User;
 import org.authentication.model.UserRole;
+import org.authentication.service.TransportServiceProxcy;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,8 @@ import java.util.Map;
 public class API {
     @Autowired
     private UserService userService;
+    @Autowired
+    private TransportServiceProxcy transportServiceProxcy;
 
     @PostMapping(path = "/login")
     public ResponseEntity<LoginData> login(@RequestBody LoginDto loginDto) throws Exception {
@@ -31,7 +34,7 @@ public class API {
         if (user == null)
             return new ResponseEntity("login failed", HttpStatus.BAD_REQUEST);
         String token = JwtTokenUtil.generateToken(user);
-        Person person = CommonUtils.getPerson(user.getPersonId(), token);
+        Person person = transportServiceProxcy.getPerson(token, user.getPersonId());
         if (CommonUtils.isNull(person))
             return new ResponseEntity("person doesn't has info", HttpStatus.BAD_REQUEST);
         List<Role> userRoles = userService.listAllRole(user.getId());

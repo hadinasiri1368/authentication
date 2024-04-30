@@ -12,6 +12,17 @@ spring:
     hibernate.ddl-auto: none
     generate-ddl: false
     show-sql: true
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            loggerLevel: full
+
+
+logging:
+  level:
+    root: warn
 
 jwt:
   secretKey: eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcwMDYzODUzNywiaWF0IjoxNzAwNjM4NTM3fQ.cakxNusKVbUYfXIO_ldis-uQtQMxRO58Tktr31X6O_I
@@ -24,3 +35,5 @@ eureka:
 
 serviceUrl:
   transport: http://localhost:8082
+
+

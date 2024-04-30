@@ -139,19 +139,6 @@ public class CommonUtils {
         }
     }
 
-    public static Person getPerson(Long id, String token) {
-        try {
-            String url = ApplicationProperties.getServiceUrlTransport() + "/api/person/" + id;
-            HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(token);
-            return callService(url, HttpMethod.GET, headers, null, Person.class, null);
-        } catch (Exception e) {
-            log.error("get person info error: " + e.getMessage());
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     public static <T> T callService(String url, HttpMethod httpMethod, HttpHeaders headers, Object body, Class<T> aClass, Map<String, Object> params) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity httpEntity = new HttpEntity(body, headers);
