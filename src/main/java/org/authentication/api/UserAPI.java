@@ -5,8 +5,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.authentication.common.CommonUtils;
 import org.authentication.common.JwtTokenUtil;
 import org.authentication.dto.RequestDto.ChangePasswordDto;
+import org.authentication.dto.ResponseDto.UserPersonDto;
 import org.authentication.model.Role;
 import org.authentication.model.User;
+import org.authentication.service.TransportServiceProxcy;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,8 @@ import java.util.List;
 public class UserAPI {
     @Autowired
     private UserService service;
+    @Autowired
+    private TransportServiceProxcy transportServiceProxcy;
 
     @PostMapping(path = "/api/user/add")
     public Long addUser(@RequestBody User user, HttpServletRequest request) throws Exception {
@@ -47,6 +51,12 @@ public class UserAPI {
     @GetMapping(path = "/api/user")
     public List<User> listUser() {
         return service.findAll(User.class);
+    }
+
+    @GetMapping(path = "/api/userPerson")
+    public List<UserPersonDto> listUserPerson(HttpServletRequest request) {
+        List<User> users = service.findAll(User.class);
+        return transportServiceProxcy.getUserPerson(CommonUtils.getToken(request), users);
     }
 
     @GetMapping(path = "/api/user/role")
