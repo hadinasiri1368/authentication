@@ -33,7 +33,4 @@ eureka:
     service-url:
       defaultZone: http://localhost:8080/eureka
 
-serviceUrl:
-  transport: http://localhost:8082
-
 
