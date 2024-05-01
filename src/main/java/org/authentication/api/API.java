@@ -66,7 +66,7 @@ public class API {
     }
 
     @GetMapping(path = "/checkValidationToken")
-    public ResponseEntity<String> checkValidationToken(@ModelAttribute("token") String token, @ModelAttribute("url") String url) {
+    public ResponseEntity<String> checkValidationToken(@RequestParam("token") String token, @RequestParam("url") String url) {
         String message = CommonUtils.getTokenValidationMessage(token);
         if (!CommonUtils.isNull(message)) {
             return new ResponseEntity(message, HttpStatus.BAD_REQUEST);
@@ -74,6 +74,6 @@ public class API {
         User user = JwtTokenUtil.getUserFromToken(token);
         if (!CommonUtils.hasPermission(user, url))
             return new ResponseEntity("you dont have permission", HttpStatus.BAD_REQUEST);
-        return new ResponseEntity("token is ok", HttpStatus.OK);
+        return new ResponseEntity(null, HttpStatus.OK);
     }
 }
