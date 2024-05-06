@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.authentication.common.CommonUtils;
 import org.authentication.common.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(
@@ -33,6 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (CommonUtils.isNull(SecurityContextHolder.getContext().getAuthentication())) {
             UserDetails userDetails = JwtTokenUtil.getUserDetails(request);
             if (JwtTokenUtil.validateToken(token)) {
+                CommonUtils.checkValidationToken(token, request.getRequestURI());
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()
                 );
@@ -41,8 +44,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
                 SecurityContextHolder.getContext().setAuthentication(authToken);
                 filterChain.doFilter(request, response);
-            } else
+            } else{
+                log.info("RequestURL:" + request.getRequestURL() + "  UUID=" + request.getHeader("X-UUID") +"   message=token.is.not.valid");
                 throw new RuntimeException("token.is.not.valid");
+            }
+
         }
     }
 }

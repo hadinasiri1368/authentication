@@ -1,7 +1,9 @@
 package org.authentication.common;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.authentication.dto.ResponseDto.ExceptionDto;
 import org.authentication.dto.ResponseDto.Person;
 import org.authentication.model.Permission;
 import org.authentication.model.User;
@@ -163,5 +165,30 @@ public class CommonUtils {
                 return false;
         }
         return true;
+    }
+
+    public static void checkValidationToken(String token, String url) throws RuntimeException {
+        String message = getTokenValidationMessage(token);
+        if (!isNull(message)) {
+            throw new RuntimeException(message);
+        }
+        User user = JwtTokenUtil.getUserFromToken(token);
+        if (!CommonUtils.hasPermission(user, url))
+            throw new RuntimeException("you.dont.have.permission");
+
+    }
+
+    public static ExceptionDto getException(Exception exception) {
+        try {
+            String[] messageArray = exception.getMessage().split("]:");
+            ObjectMapper objectMapper = new ObjectMapper();
+            if (messageArray.length > 1) {
+                return objectMapper.readValue(messageArray[1].replaceAll("\\[", ""), ExceptionDto.class);
+            } else {
+                return objectMapper.readValue(messageArray[0].replaceAll("\\[", ""), ExceptionDto.class);
+            }
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

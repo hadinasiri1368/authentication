@@ -56,7 +56,8 @@ public class UserAPI {
     @GetMapping(path = "/api/userPerson")
     public List<UserPersonDto> listUserPerson(HttpServletRequest request) {
         List<User> users = service.findAll(User.class);
-        return transportServiceProxcy.getUserPerson(CommonUtils.getToken(request), users);
+        String uuid = request.getHeader("X-UUID");
+        return transportServiceProxcy.getUserPerson(CommonUtils.getToken(request), uuid, users);
     }
 
     @GetMapping(path = "/api/user/role")

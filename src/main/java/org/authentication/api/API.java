@@ -1,5 +1,6 @@
 package org.authentication.api;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.authentication.common.CommonUtils;
 import org.authentication.common.Const;
 import org.authentication.common.JwtTokenUtil;
@@ -29,12 +30,13 @@ public class API {
     private TransportServiceProxcy transportServiceProxcy;
 
     @PostMapping(path = "/login")
-    public ResponseEntity<LoginData> login(@RequestBody LoginDto loginDto) throws Exception {
+    public ResponseEntity<LoginData> login(@RequestBody LoginDto loginDto, HttpServletRequest request) throws Exception {
         User user = userService.findOne(loginDto.getUsername(), loginDto.getPassword());
+        String uuid = request.getHeader("X-UUID");
         if (user == null)
             return new ResponseEntity("login failed", HttpStatus.BAD_REQUEST);
         String token = JwtTokenUtil.generateToken(user);
-        Person person = transportServiceProxcy.getPerson(token, user.getPersonId());
+        Person person = transportServiceProxcy.getPerson(token, uuid, user.getPersonId());
         if (CommonUtils.isNull(person))
             return new ResponseEntity("person doesn't has info", HttpStatus.BAD_REQUEST);
         List<Role> userRoles = userService.listAllRole(user.getId());
@@ -67,13 +69,11 @@ public class API {
 
     @GetMapping(path = "/checkValidationToken")
     public ResponseEntity<String> checkValidationToken(@RequestParam("token") String token, @RequestParam("url") String url) {
-        String message = CommonUtils.getTokenValidationMessage(token);
-        if (!CommonUtils.isNull(message)) {
-            return new ResponseEntity(message, HttpStatus.BAD_REQUEST);
+        try {
+            CommonUtils.checkValidationToken(token, url);
+            return new ResponseEntity(null, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
-        User user = JwtTokenUtil.getUserFromToken(token);
-        if (!CommonUtils.hasPermission(user, url))
-            return new ResponseEntity("you dont have permission", HttpStatus.BAD_REQUEST);
-        return new ResponseEntity(null, HttpStatus.OK);
     }
 }
