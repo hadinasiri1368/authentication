@@ -7,6 +7,8 @@ import org.authentication.dto.RequestDto.UserGroupRoleDto;
 import org.authentication.model.*;
 import org.authentication.service.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public class UserGroupRoleAPI {
     private GenericService<UserGroupRole> service;
 
     @PostMapping(path = "/api/userGroupRole/add")
-    public Long addUserGroupRole(@RequestBody UserGroupRoleDto userGroupRoleDto, HttpServletRequest request) throws Exception{
+    public Long addUserGroupRole(@RequestBody UserGroupRoleDto userGroupRoleDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserGroupRole userGroupRole = new UserGroupRole();
         userGroupRole.setId(userGroupRoleDto.getId());
@@ -31,8 +33,9 @@ public class UserGroupRoleAPI {
         service.insert(userGroupRole, userId);
         return userGroupRole.getId();
     }
+
     @PutMapping(path = "/api/userGroupRole/edit")
-    public Long editUserGroupRole(@RequestBody UserGroupRoleDto userGroupRoleDto, HttpServletRequest request) throws Exception{
+    public Long editUserGroupRole(@RequestBody UserGroupRoleDto userGroupRoleDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserGroupRole userGroupRole = new UserGroupRole();
         userGroupRole.setId(userGroupRoleDto.getId());
@@ -42,7 +45,7 @@ public class UserGroupRoleAPI {
         userGroup.setId(userGroupRoleDto.getUserGroupId());
         userGroupRole.setUserGroup(userGroup);
         userGroupRole.setRole(role);
-        service.update(userGroupRole ,userId, UserGroupRole.class);
+        service.update(userGroupRole, userId, UserGroupRole.class);
         return userGroupRole.getId();
     }
 
@@ -58,7 +61,7 @@ public class UserGroupRoleAPI {
     }
 
     @GetMapping(path = "/api/userGroupRole")
-    public List<UserGroupRole> listUserGroupRole() {
-        return service.findAll(UserGroupRole.class);
+    public Page<UserGroupRole> listUserGroupRole(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
+        return service.findAll(UserGroupRole.class, page, size);
     }
 }

@@ -65,7 +65,7 @@ public class API {
     }
 
     @GetMapping(path = "/getUser")
-    public ResponseEntity<Map> getUserObject(@ModelAttribute("token") String token) {
+    public ResponseEntity<Map> getUserObject(@RequestParam("token") String token) {
         Map map = JwtTokenUtil.getUsernameFromToken(token);
         return new ResponseEntity(map, HttpStatus.OK);
     }

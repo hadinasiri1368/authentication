@@ -8,6 +8,7 @@ import org.authentication.model.*;
 import org.authentication.service.GenericService;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,8 +63,8 @@ public class UserRoleAPI {
     }
 
     @GetMapping(path = "/api/userRole")
-    public List<UserRole> listUserRole() {
-        return service.findAll(UserRole.class);
+    public Page<UserRole> listUserRole(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
+        return service.findAll(UserRole.class, page, size);
     }
 
     @GetMapping(path = "/api/userRolePerUser/{userId}")

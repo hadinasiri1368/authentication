@@ -6,6 +6,7 @@ import org.authentication.common.CommonUtils;
 import org.authentication.model.Role;
 import org.authentication.service.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class RoleAPI {
     }
 
     @GetMapping(path = "/api/role")
-    public List<Role> listRole() {
-        return service.findAll(Role.class);
+    public Page<Role> listRole(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
+        return service.findAll(Role.class,page,size);
     }
 }

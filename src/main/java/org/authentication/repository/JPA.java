@@ -3,6 +3,9 @@ package org.authentication.repository;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import org.authentication.common.CommonUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -68,5 +71,26 @@ public class JPA<ENTITY, ID> {
             query.setParameter(key, param.get(key));
         }
         return query.getResultList();
+    }
+
+    public Page<ENTITY> findAllWithPaging(Class<ENTITY> aClass) {
+        Entity entity = aClass.getAnnotation(Entity.class);
+        Query query = entityManager.createQuery("select entity from " + entity.name() + " entity");
+        List<ENTITY> fooList = query.getResultList();
+        PageRequest pageRequest = PageRequest.of(0, fooList.size());
+        return new PageImpl<ENTITY>(fooList, pageRequest, fooList.size());
+    }
+
+    public Page<ENTITY> findAllWithPaging(Class<ENTITY> aClass, PageRequest pageRequest) {
+        Entity entity = aClass.getAnnotation(Entity.class);
+        Query query = entityManager.createQuery("select entity from " + entity.name() + " entity");
+        int pageNumber = pageRequest.getPageNumber();
+        int pageSize = pageRequest.getPageSize();
+        query.setFirstResult((pageNumber) * pageSize);
+        query.setMaxResults(pageSize);
+        List<ENTITY> fooList = query.getResultList();
+        Query queryTotal = entityManager.createQuery("select count(entity.id) from " + entity.name() + " entity");
+        Long countResult = (Long) queryTotal.getSingleResult();
+        return new PageImpl<ENTITY>(fooList, pageRequest, countResult);
     }
 }

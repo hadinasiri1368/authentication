@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.authentication.common.CommonUtils;
 import org.authentication.service.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.authentication.model.Permission;
 
@@ -42,7 +43,7 @@ public class PermissionAPI {
     }
 
     @GetMapping(path = "/api/permission")
-    public List<Permission> listPermission() {
-        return service.findAll(Permission.class);
+    public Page<Permission> listPermission(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
+        return service.findAll(Permission.class, page, size);
     }
 }

@@ -9,6 +9,7 @@ import org.authentication.model.Role;
 import org.authentication.model.RolePermission;
 import org.authentication.service.GenericService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -60,7 +61,7 @@ public class RolePermissionAPI {
     }
 
     @GetMapping(path = "/api/rolePermission")
-    public List<RolePermission> listRolePermission() {
-        return service.findAll(RolePermission.class);
+    public Page<RolePermission> listRolePermission(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
+        return service.findAll(RolePermission.class,page,size);
     }
 }

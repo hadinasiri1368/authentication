@@ -8,6 +8,7 @@ import org.authentication.model.*;
 import org.authentication.service.GenericService;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public class UserPermissionAPI {
         return userPermission.getId();
     }
 
-    @PutMapping (path = "/api/userPermission/edit")
+    @PutMapping(path = "/api/userPermission/edit")
     public Long editUserPermission(@RequestBody UserPermissionDto userPermissionDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserPermission userPermission = new UserPermission();
@@ -63,8 +64,8 @@ public class UserPermissionAPI {
     }
 
     @GetMapping(path = "/api/userPermission")
-    public List<UserPermission> listUserPermission() {
-        return service.findAll(UserPermission.class);
+    public Page<UserPermission> listUserPermission(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
+        return service.findAll(UserPermission.class, page, size);
     }
 
     @GetMapping(path = "/api/userPermissionPerUser/{userId}")

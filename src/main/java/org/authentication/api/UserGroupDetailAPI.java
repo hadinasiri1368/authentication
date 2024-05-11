@@ -10,6 +10,8 @@ import org.authentication.model.UserGroupDetail;
 import org.authentication.service.GenericService;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +20,7 @@ import java.util.List;
 @SecurityRequirement(name = "Bearer Authentication")
 public class UserGroupDetailAPI {
     @Autowired
-     private GenericService<UserGroupDetail> service;
+    private GenericService<UserGroupDetail> service;
     @Autowired
     private UserService userService;
 
@@ -64,8 +66,8 @@ public class UserGroupDetailAPI {
     }
 
     @GetMapping(path = "/api/userGroupDetail")
-    public List<UserGroupDetail> listUserGroupDetail() {
-        return service.findAll(UserGroupDetail.class);
+    public Page<UserGroupDetail> listUserGroupDetail(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
+        return service.findAll(UserGroupDetail.class, page, size);
     }
 
     @GetMapping(path = "/api/userGroupDetailPerUser/{userId}")

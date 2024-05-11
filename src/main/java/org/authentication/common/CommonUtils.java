@@ -191,4 +191,8 @@ public class CommonUtils {
             return null;
         }
     }
+
+    public static <E> E isNull(E expr1, E expr2) {
+        return (!isNull(expr1)) ? expr1 : expr2;
+    }
 }
