@@ -16,10 +16,13 @@ import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
@@ -56,7 +59,7 @@ public class API {
     }
 
     @GetMapping(path = "/getUserId")
-    public ResponseEntity<String> getUserId(@ModelAttribute("token") String token) {
+    public ResponseEntity<String> getUserId(@RequestParam("token") String token) {
         Map map = JwtTokenUtil.getUsernameFromToken(token);
         return new ResponseEntity(map.get("id").toString(), HttpStatus.OK);
     }
