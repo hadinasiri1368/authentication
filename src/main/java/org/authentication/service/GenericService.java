@@ -27,7 +27,7 @@ public class GenericService<Entity> {
 
     @Value("${PageRequest.page}")
     private Integer page;
-    @Value("$PageRequest.size}")
+    @Value("${PageRequest.size}")
     private Integer size;
 
     @Transactional
