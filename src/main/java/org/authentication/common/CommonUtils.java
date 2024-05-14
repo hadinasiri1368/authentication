@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.authentication.dto.ResponseDto.ExceptionDto;
-import org.authentication.dto.ResponseDto.Person;
 import org.authentication.model.Permission;
 import org.authentication.model.User;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -194,5 +196,19 @@ public class CommonUtils {
 
     public static <E> E isNull(E expr1, E expr2) {
         return (!isNull(expr1)) ? expr1 : expr2;
+    }
+
+    public static <T>Page<T> listPaging(List<T> aClass) {
+        PageRequest pageRequest = PageRequest.of(0, aClass.size());
+        long countResult = (long) aClass.size();
+        return new PageImpl<>(aClass, pageRequest, countResult);
+    }
+
+    public static <T>Page<T> listPaging(List<T> aClass, PageRequest pageRequest) {
+        int pageNumber = pageRequest.getPageNumber();
+        int pageSize = pageRequest.getPageSize();
+        long countResult = (long) aClass.size();
+        aClass = aClass.subList((pageNumber*pageSize),pageSize);
+        return new PageImpl<>(aClass, pageRequest, countResult);
     }
 }

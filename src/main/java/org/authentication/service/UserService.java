@@ -8,6 +8,10 @@ import org.authentication.dto.RequestDto.ChangePasswordDto;
 import org.authentication.model.*;
 import org.authentication.repository.JPA;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +23,11 @@ public class UserService {
     private JPA<User, Long> genericJPA;
     @Autowired
     private EntityManager entityManager;
+
+    @Value("${PageRequest.page}")
+    private Integer page;
+    @Value("${PageRequest.size}")
+    private Integer size;
 
     public void insert(User user, Long userId) throws Exception {
         user.setId(null);
@@ -119,24 +128,34 @@ public class UserService {
         Query query = entityManager.createQuery("update user u set u.password=:pass where u.id=:userId");
         return genericJPA.executeUpdate(query, param);
     }
-    public List<UserRole> findUserRole( Long userId){
+
+    public List<UserRole> findUserRole(Long userId) {
         Query query = entityManager.createQuery("select u  from userRole u where u.user.id=:userId");
         Map<String, Object> param = new HashMap<>();
         param.put("userId", userId);
         return genericJPA.listByQuery(query, param);
     }
 
-    public List<UserGroupDetail> findUserGroupDetail(Long userId){
+    public List<UserGroupDetail> findUserGroupDetail(Long userId) {
         Query query = entityManager.createQuery("select u  from userGroupDetail u where u.user.id=:userId");
         Map<String, Object> param = new HashMap<>();
         param.put("userId", userId);
         return genericJPA.listByQuery(query, param);
     }
 
-    public List<UserPermission> findUserPermission(Long userId){
+    public List<UserPermission> findUserPermission(Long userId) {
         Query query = entityManager.createQuery("select u  from userPermission u where u.user.id=:userId");
         Map<String, Object> param = new HashMap<>();
         param.put("userId", userId);
         return genericJPA.listByQuery(query, param);
     }
+
+    public Page<User> findAll(Class<User> aClass, Integer page, Integer size) {
+        if (CommonUtils.isNull(page) && CommonUtils.isNull(size)) {
+            return genericJPA.findAllWithPaging(aClass);
+        }
+        PageRequest pageRequest = PageRequest.of(CommonUtils.isNull(page, this.page), CommonUtils.isNull(size, this.size));
+        return genericJPA.findAllWithPaging(aClass, pageRequest);
+    }
+
 }
