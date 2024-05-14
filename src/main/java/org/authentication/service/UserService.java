@@ -8,6 +8,9 @@ import org.authentication.dto.RequestDto.ChangePasswordDto;
 import org.authentication.model.*;
 import org.authentication.repository.JPA;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,11 @@ public class UserService {
     private JPA<User, Long> genericJPA;
     @Autowired
     private EntityManager entityManager;
+
+    @Value("${PageRequest.page}")
+    private Integer page;
+    @Value("${PageRequest.size}")
+    private Integer size;
 
     public void insert(User user, Long userId) throws Exception {
         user.setId(null);
@@ -138,5 +146,13 @@ public class UserService {
         Map<String, Object> param = new HashMap<>();
         param.put("userId", userId);
         return genericJPA.listByQuery(query, param);
+    }
+
+    public Page<User> findAll(Class<User> aClass, Integer page, Integer size) {
+        if (CommonUtils.isNull(page) && CommonUtils.isNull(size)) {
+            return genericJPA.findAllWithPaging(aClass);
+        }
+        PageRequest pageRequest = PageRequest.of(CommonUtils.isNull(page, this.page), CommonUtils.isNull(size, this.size));
+        return genericJPA.findAllWithPaging(aClass, pageRequest);
     }
 }

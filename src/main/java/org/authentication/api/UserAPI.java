@@ -11,6 +11,10 @@ import org.authentication.model.User;
 import org.authentication.service.TransportServiceProxcy;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +26,11 @@ public class UserAPI {
     private UserService service;
     @Autowired
     private TransportServiceProxcy transportServiceProxcy;
+
+    @Value("${PageRequest.page}")
+    private Integer page;
+    @Value("${PageRequest.size}")
+    private Integer size;
 
     @PostMapping(path = "/api/user/add")
     public Long addUser(@RequestBody User user, HttpServletRequest request) throws Exception {
@@ -54,10 +63,20 @@ public class UserAPI {
     }
 
     @GetMapping(path = "/api/userPerson")
-    public List<UserPersonDto> listUserPerson(HttpServletRequest request) {
+    public Page<UserPersonDto> listUserPerson(HttpServletRequest request,@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
         List<User> users = service.findAll(User.class);
         String uuid = request.getHeader("X-UUID");
-        return transportServiceProxcy.getUserPerson(CommonUtils.getToken(request), uuid, users);
+        List<UserPersonDto> userPersonDtos = transportServiceProxcy.getUserPerson(CommonUtils.getToken(request), uuid, users);
+        if (CommonUtils.isNull(page) && CommonUtils.isNull(size)) {
+            PageRequest pageRequest = PageRequest.of(0, userPersonDtos.size());
+            return new PageImpl<>(userPersonDtos, pageRequest, userPersonDtos.size());
+        }
+        PageRequest pageRequest = PageRequest.of(CommonUtils.isNull(page, this.page), CommonUtils.isNull(size, this.size));
+        int pageNumber = pageRequest.getPageNumber();
+        int pageSize = pageRequest.getPageSize();
+        Long countResult = (long) userPersonDtos.size();
+        userPersonDtos = userPersonDtos.subList((pageNumber*pageSize),pageSize);
+        return new PageImpl<>(userPersonDtos, pageRequest, countResult);
     }
 
     @GetMapping(path = "/api/user/role")
