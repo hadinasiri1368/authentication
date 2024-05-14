@@ -198,17 +198,18 @@ public class CommonUtils {
         return (!isNull(expr1)) ? expr1 : expr2;
     }
 
-    public static <T>Page<T> listPaging(List<T> aClass) {
-        PageRequest pageRequest = PageRequest.of(0, aClass.size());
-        long countResult = (long) aClass.size();
-        return new PageImpl<>(aClass, pageRequest, countResult);
+    public static <T> Page<T> listPaging(List<T> aClass) {
+        return listPaging(aClass, null);
     }
 
-    public static <T>Page<T> listPaging(List<T> aClass, PageRequest pageRequest) {
-        int pageNumber = pageRequest.getPageNumber();
-        int pageSize = pageRequest.getPageSize();
+    public static <T> Page<T> listPaging(List<T> aClass, PageRequest pageRequest) {
         long countResult = (long) aClass.size();
-        aClass = aClass.subList((pageNumber*pageSize),pageSize);
+        if (!isNull(pageRequest)) {
+            int pageNumber = pageRequest.getPageNumber();
+            int pageSize = pageRequest.getPageSize();
+            aClass = aClass.subList((pageNumber * pageSize), pageSize);
+        } else
+            aClass = aClass.subList(0, aClass.size());
         return new PageImpl<>(aClass, pageRequest, countResult);
     }
 }
