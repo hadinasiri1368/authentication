@@ -20,7 +20,7 @@ public class TokenManager {
 
     public void setToken(Long userId, String token) throws Exception {
         if (tokenMap.containsKey(userId))
-            throw new RuntimeException("this.user.has.token");
+            throw new RuntimeException("1024");
         tokenMap.put(userId, token);
     }
 

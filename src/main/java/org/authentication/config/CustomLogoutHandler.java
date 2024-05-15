@@ -24,7 +24,7 @@ public class CustomLogoutHandler implements LogoutHandler {
                        Authentication authentication) {
         String token = CommonUtils.getToken(request);
         if (CommonUtils.isNull(token))
-            throw new RuntimeException("token.is.not.valid");
+            throw new RuntimeException("1004");
         User user = JwtTokenUtil.getUserFromToken(token);
         if (!CommonUtils.isNull(user)) {
             TokenManager.getInstance().removeTokenByUserId(user.getId());

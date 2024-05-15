@@ -39,9 +39,9 @@ public class UserService {
 
     public void update(User user, Long userId) throws Exception {
         if (CommonUtils.isNull(user.getId()))
-            throw new RuntimeException("id.not.found");
+            throw new RuntimeException("1006");
         if (CommonUtils.isNull(findOne(User.class, user.getId())))
-            throw new RuntimeException("id.not.found");
+            throw new RuntimeException("1006");
         user.setUpdatedUserId(userId);
         user.setUpdatedDateTime(new Date());
         genericJPA.update(user);
@@ -119,9 +119,9 @@ public class UserService {
     @Transactional
     public int changePassword(User user, ChangePasswordDto changePasswordDto) {
         if (CommonUtils.isNull(changePasswordDto.getOldPassword()) || CommonUtils.isNull(changePasswordDto.getNewPassword()))
-            throw new RuntimeException("old or new password is null");
+            throw new RuntimeException("1020");
         if (!CommonUtils.getSHA1Hash(changePasswordDto.getOldPassword()).equals(user.getPassword()))
-            throw new RuntimeException("old password is incorrect");
+            throw new RuntimeException("1021");
         Map<String, Object> param = new HashMap<>();
         param.put("pass", CommonUtils.getSHA1Hash(changePasswordDto.getNewPassword()));
         param.put("userId", user.getId());

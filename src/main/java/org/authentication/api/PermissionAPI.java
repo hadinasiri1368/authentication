@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.authentication.model.Permission;
 
-import java.util.List;
 
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")

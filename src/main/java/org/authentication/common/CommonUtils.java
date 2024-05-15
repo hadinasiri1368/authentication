@@ -72,14 +72,14 @@ public class CommonUtils {
     public static String getTokenValidationMessage(String token) {
         try {
             if (token == null || token.isBlank() || token.isEmpty())
-                return "token is null";
+                return "1003";
             if (!TokenManager.getInstance().HasToken(token))
-                return "token is not exists";
+                return "1002";
             if (!JwtTokenUtil.validateToken(token))
-                return "token is not valid";
+                return "1004";
             Map map = JwtTokenUtil.getUsernameFromToken(token);
             if (map == null || map.size() == 0)
-                return "token data is not valid";
+                return "1005";
             return null;
         } catch (Exception e) {
             return e.getMessage();
@@ -176,7 +176,7 @@ public class CommonUtils {
         }
         User user = JwtTokenUtil.getUserFromToken(token);
         if (!CommonUtils.hasPermission(user, url))
-            throw new RuntimeException("you.dont.have.permission");
+            throw new RuntimeException("1010");
 
     }
 
@@ -199,17 +199,15 @@ public class CommonUtils {
     }
 
     public static <T> Page<T> listPaging(List<T> aClass) {
-        return listPaging(aClass, null);
+        PageRequest pageRequest = PageRequest.ofSize(aClass.size());
+        return listPaging(aClass, pageRequest);
     }
 
     public static <T> Page<T> listPaging(List<T> aClass, PageRequest pageRequest) {
-        long countResult = (long) aClass.size();
-        if (!isNull(pageRequest)) {
-            int pageNumber = pageRequest.getPageNumber();
-            int pageSize = pageRequest.getPageSize();
-            aClass = aClass.subList((pageNumber * pageSize), pageSize);
-        } else
-            aClass = aClass.subList(0, aClass.size());
+        long countResult = aClass.size();
+        int pageNumber = pageRequest.getPageNumber();
+        int pageSize = pageRequest.getPageSize();
+        aClass = aClass.subList((pageNumber * pageSize), pageSize);
         return new PageImpl<>(aClass, pageRequest, countResult);
     }
 }

@@ -37,22 +37,22 @@ public class API {
         User user = userService.findOne(loginDto.getUsername(), loginDto.getPassword());
         String uuid = request.getHeader("X-UUID");
         if (user == null)
-            return new ResponseEntity("login failed", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("1022", HttpStatus.BAD_REQUEST);
         String token = JwtTokenUtil.generateToken(user);
         Person person = transportServiceProxcy.getPerson(token, uuid, user.getPersonId());
         if (CommonUtils.isNull(person))
-            return new ResponseEntity("person doesn't has info", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("1023", HttpStatus.BAD_REQUEST);
         List<Role> userRoles = userService.listAllRole(user.getId());
         if (!user.getIsAdmin()) {
             if (loginDto.getUserType() == Const.USER_TYPE_EMPLOYEE) {
                 if (userRoles.stream().filter(item -> item.getId() == Const.USER_TYPE_EMPLOYEE.intValue()).count() == 0)
-                    return new ResponseEntity("dont have permission", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity("1010", HttpStatus.BAD_REQUEST);
             } else if (loginDto.getUserType() == Const.USER_TYPE_DRIVER) {
                 if (userRoles.stream().filter(item -> item.getId() == Const.USER_TYPE_DRIVER.intValue()).count() == 0)
-                    return new ResponseEntity("dont have permission", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity("1010", HttpStatus.BAD_REQUEST);
             } else if (loginDto.getUserType() == Const.USER_TYPE_CUSTOMER) {
                 if (userRoles.stream().filter(item -> item.getId() == Const.USER_TYPE_CUSTOMER.intValue()).count() == 0)
-                    return new ResponseEntity("dont have permission", HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity("1010", HttpStatus.BAD_REQUEST);
             }
         }
         return new ResponseEntity(LoginData.builder().isAdmin(user.getIsAdmin()).isActive(user.getIsActive()).username(user.getUsername()).name(person.getName()).family(person.getFamily()).token(token).build(), HttpStatus.OK);

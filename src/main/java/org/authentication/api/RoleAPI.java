@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
@@ -44,6 +43,6 @@ public class RoleAPI {
 
     @GetMapping(path = "/api/role")
     public Page<Role> listRole(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
-        return service.findAll(Role.class,page,size);
+        return service.findAll(Role.class, page, size);
     }
 }

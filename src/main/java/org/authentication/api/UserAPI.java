@@ -8,7 +8,6 @@ import org.authentication.dto.RequestDto.ChangePasswordDto;
 import org.authentication.dto.ResponseDto.UserPersonDto;
 import org.authentication.model.Role;
 import org.authentication.model.User;
-import org.authentication.repository.JPA;
 import org.authentication.service.TransportServiceProxcy;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
