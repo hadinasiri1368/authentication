@@ -84,4 +84,9 @@ public class UserAPI {
     public int changePassword(@RequestBody ChangePasswordDto changePasswordDto, HttpServletRequest request) {
         return service.changePassword(JwtTokenUtil.getUserFromToken(CommonUtils.getToken(request)), changePasswordDto);
     }
+
+    @GetMapping(path = "/api/findUser/{personId}")
+    public User findPersonUser(@PathVariable Long personId) {
+        return service.findUserPerson(User.class, personId);
+    }
 }

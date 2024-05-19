@@ -158,4 +158,12 @@ public class UserService {
         return genericJPA.findAllWithPaging(aClass, pageRequest);
     }
 
+    public User findUserPerson(Class<User> aClass, Long personId) {
+        String hql = "select u  from user u where u.personId=:personId";
+        Query query = entityManager.createQuery(hql);
+        Map<String, Object> param = new HashMap<>();
+        param.put("personId", personId);
+        return (User) genericJPA.listByQuery(query, param).get(0);
+    }
+
 }
