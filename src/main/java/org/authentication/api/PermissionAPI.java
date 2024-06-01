@@ -16,32 +16,32 @@ public class PermissionAPI {
     @Autowired
     private GenericService<Permission> service;
 
-    @PostMapping(path = "/api/permission/add")
+    @PostMapping(path = "/authentication/permission/add")
     public Long addPermission(@RequestBody Permission permission, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.insert(permission, userId);
         return permission.getId();
     }
 
-    @PutMapping(path = "/api/permission/edit")
+    @PutMapping(path = "/authentication/permission/edit")
     public Long editPermission(@RequestBody Permission permission, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.update(permission, userId, Permission.class);
         return permission.getId();
     }
 
-    @DeleteMapping(path = "/api/permission/remove/{id}")
+    @DeleteMapping(path = "/authentication/permission/remove/{id}")
     public Long removePermission(@PathVariable Long id) {
         service.delete(id, Permission.class);
         return id;
     }
 
-    @GetMapping(path = "/api/permission/{id}")
+    @GetMapping(path = "/authentication/permission/{id}")
     public Permission getPermission(@PathVariable Long id) {
         return service.findOne(Permission.class, id);
     }
 
-    @GetMapping(path = "/api/permission")
+    @GetMapping(path = "/authentication/permission")
     public Page<Permission> listPermission(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
         return service.findAll(Permission.class, page, size);
     }

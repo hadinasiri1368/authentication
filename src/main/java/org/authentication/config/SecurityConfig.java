@@ -21,10 +21,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
     @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    @Autowired
     private CustomLogoutHandler logoutHandler;
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -34,7 +33,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf()
                 .disable()
-                .authorizeHttpRequests(req -> req.requestMatchers("/login/**","/getUserId/**","/getUser/**","/checkValidationToken/**").permitAll().anyRequest().authenticated())
+                .authorizeHttpRequests(req -> req.requestMatchers("/login/**", "/authentication/getUserId/**", "/authentication/getUser/**", "/authentication/checkValidationToken/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll().anyRequest().authenticated())
                 .logout(l -> l.logoutUrl("/logout/**").addLogoutHandler(logoutHandler).logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()));
         return http.build();
 

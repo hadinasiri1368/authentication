@@ -14,13 +14,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Component
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private String pathsToBypass = "/login/**,/v3/api-docs/**,/swagger-ui/**,/swagger-ui.html";
+    private static final AntPathMatcher pathMatcher = new AntPathMatcher();
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -44,11 +49,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
                 SecurityContextHolder.getContext().setAuthentication(authToken);
                 filterChain.doFilter(request, response);
-            } else{
-                log.info("RequestURL:" + request.getRequestURL() + "  UUID=" + request.getHeader("X-UUID") +"   message=token.is.not.valid");
+            } else {
+                log.info("RequestURL:" + request.getRequestURL() + "  UUID=" + request.getHeader("X-UUID") + "   message=token.is.not.valid");
                 throw new RuntimeException("token.is.not.valid");
             }
 
         }
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        if(request.getMethod().equals("OPTIONS"))
+            return true;
+        String[] paths = pathsToBypass.split(",");
+        for (String path : paths) {
+            if (pathMatcher.match(path.trim(), request.getRequestURI())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

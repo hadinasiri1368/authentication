@@ -17,7 +17,7 @@ public class UserGroupRoleAPI {
     @Autowired
     private GenericService<UserGroupRole> service;
 
-    @PostMapping(path = "/api/userGroupRole/add")
+    @PostMapping(path = "/authentication/userGroupRole/add")
     public Long addUserGroupRole(@RequestBody UserGroupRoleDto userGroupRoleDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserGroupRole userGroupRole = new UserGroupRole();
@@ -32,7 +32,7 @@ public class UserGroupRoleAPI {
         return userGroupRole.getId();
     }
 
-    @PutMapping(path = "/api/userGroupRole/edit")
+    @PutMapping(path = "/authentication/userGroupRole/edit")
     public Long editUserGroupRole(@RequestBody UserGroupRoleDto userGroupRoleDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserGroupRole userGroupRole = new UserGroupRole();
@@ -47,18 +47,18 @@ public class UserGroupRoleAPI {
         return userGroupRole.getId();
     }
 
-    @DeleteMapping(path = "/api/userGroupRole/remove/{id}")
+    @DeleteMapping(path = "/authentication/userGroupRole/remove/{id}")
     public Long removeUserGroupRole(@PathVariable Long id) {
         service.delete(id, UserGroupRole.class);
         return id;
     }
 
-    @GetMapping(path = "/api/userGroupRole/{id}")
+    @GetMapping(path = "/authentication/userGroupRole/{id}")
     public UserGroupRole getUserGroupRole(@PathVariable Long id) {
         return service.findOne(UserGroupRole.class, id);
     }
 
-    @GetMapping(path = "/api/userGroupRole")
+    @GetMapping(path = "/authentication/userGroupRole")
     public Page<UserGroupRole> listUserGroupRole(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
         return service.findAll(UserGroupRole.class, page, size);
     }

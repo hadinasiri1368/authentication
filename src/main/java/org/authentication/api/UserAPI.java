@@ -31,37 +31,37 @@ public class UserAPI {
     @Value("${PageRequest.size}")
     private Integer size;
 
-    @PostMapping(path = "/api/user/add")
+    @PostMapping(path = "/authentication/user/add")
     public Long addUser(@RequestBody User user, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.insert(user, userId);
         return user.getId();
     }
 
-    @PutMapping(path = "/api/user/edit")
+    @PutMapping(path = "/authentication/user/edit")
     public Long editUser(@RequestBody User user, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         service.update(user, userId);
         return user.getId();
     }
 
-    @DeleteMapping(path = "/api/user/remove/{id}")
+    @DeleteMapping(path = "/authentication/user/remove/{id}")
     public Long removeUser(@PathVariable Long id) {
         service.delete(id);
         return id;
     }
 
-    @GetMapping(path = "/api/user/{id}")
+    @GetMapping(path = "/authentication/user/{id}")
     public User getUser(@PathVariable Long id) {
         return service.findOne(User.class, id);
     }
 
-    @GetMapping(path = "/api/user")
+    @GetMapping(path = "/authentication/user")
     public List<User> listUser() {
         return service.findAll(User.class);
     }
 
-    @GetMapping(path = "/api/userPerson")
+    @GetMapping(path = "/authentication/userPerson")
     public Page<UserPersonDto> listUserPerson(HttpServletRequest request, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
         List<User> users = service.findAll(User.class);
         String uuid = request.getHeader("X-UUID");
@@ -73,19 +73,19 @@ public class UserAPI {
         return CommonUtils.listPaging(userPersonDtos, pageRequest);
     }
 
-    @GetMapping(path = "/api/user/role")
+    @GetMapping(path = "/authentication/user/role")
     public List<Role> listRole(@RequestParam(value = "userId", required = false) Long userId, HttpServletRequest request) {
         if (CommonUtils.isNull(userId))
             userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         return service.listAllRole(userId);
     }
 
-    @PostMapping(path = "/api/user/changePassword")
+    @PostMapping(path = "/authentication/user/changePassword")
     public int changePassword(@RequestBody ChangePasswordDto changePasswordDto, HttpServletRequest request) {
         return service.changePassword(JwtTokenUtil.getUserFromToken(CommonUtils.getToken(request)), changePasswordDto);
     }
 
-    @GetMapping(path = "/api/findUser/{personId}")
+    @GetMapping(path = "/authentication/findUser/{personId}")
     public User findPersonUser(@PathVariable Long personId) {
         return service.findUserPerson(User.class, personId);
     }

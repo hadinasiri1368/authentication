@@ -23,7 +23,7 @@ public class UserGroupDetailAPI {
     @Autowired
     private UserService userService;
 
-    @PostMapping(path = "/api/userGroupDetail/add")
+    @PostMapping(path = "/authentication/userGroupDetail/add")
     public Long addUserGroupDetail(@RequestBody UserGroupDetailDto userGroupDetailDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserGroupDetail userGroupDetail = new UserGroupDetail();
@@ -38,7 +38,7 @@ public class UserGroupDetailAPI {
         return userGroupDetail.getId();
     }
 
-    @PutMapping(path = "/api/userGroupDetail/edit")
+    @PutMapping(path = "/authentication/userGroupDetail/edit")
     public Long editUserGroupDetail(@RequestBody UserGroupDetailDto userGroupDetailDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserGroupDetail userGroupDetail = new UserGroupDetail();
@@ -53,23 +53,23 @@ public class UserGroupDetailAPI {
         return userGroupDetail.getId();
     }
 
-    @DeleteMapping(path = "/api/userGroupDetail/remove/{id}")
+    @DeleteMapping(path = "/authentication/userGroupDetail/remove/{id}")
     public Long removeUserGroupDetail(@PathVariable Long id) {
         service.delete(id, UserGroupDetail.class);
         return id;
     }
 
-    @GetMapping(path = "/api/userGroupDetail/{id}")
+    @GetMapping(path = "/authentication/userGroupDetail/{id}")
     public UserGroupDetail getUserGroupDetail(@PathVariable Long id) {
         return service.findOne(UserGroupDetail.class, id);
     }
 
-    @GetMapping(path = "/api/userGroupDetail")
+    @GetMapping(path = "/authentication/userGroupDetail")
     public Page<UserGroupDetail> listUserGroupDetail(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
         return service.findAll(UserGroupDetail.class, page, size);
     }
 
-    @GetMapping(path = "/api/userGroupDetailPerUser/{userId}")
+    @GetMapping(path = "/authentication/userGroupDetailPerUser/{userId}")
     public List<UserGroupDetail> userGroupDetails(@PathVariable Long userId) {
         return userService.findUserGroupDetail(userId);
     }

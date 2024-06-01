@@ -20,7 +20,7 @@ public class RolePermissionAPI {
     @Autowired
     private GenericService<RolePermission> service;
 
-    @PostMapping(path = "/api/rolePermission/add")
+    @PostMapping(path = "/authentication/rolePermission/add")
     public Long addRolePermission(@RequestBody RolePermissionDto rolePermissionDto, HttpServletRequest request) throws Exception{
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         RolePermission rolePermission = new RolePermission();
@@ -34,7 +34,7 @@ public class RolePermissionAPI {
         return rolePermission.getId();
     }
 
-    @PutMapping(path = "/api/rolePermission/edit")
+    @PutMapping(path = "/authentication/rolePermission/edit")
     public Long editRolePermission(@RequestBody RolePermissionDto rolePermissionDto, HttpServletRequest request) throws Exception{
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         RolePermission rolePermission = new RolePermission();
@@ -49,18 +49,18 @@ public class RolePermissionAPI {
         return rolePermission.getId();
     }
 
-    @DeleteMapping(path = "/api/rolePermission/remove/{id}")
+    @DeleteMapping(path = "/authentication/rolePermission/remove/{id}")
     public Long removeRolePermission(@PathVariable Long id) {
         service.delete(id, RolePermission.class);
         return id;
     }
 
-    @GetMapping(path = "/api/rolePermission/{id}")
+    @GetMapping(path = "/authentication/rolePermission/{id}")
     public RolePermission getRolePermission(@PathVariable Long id) {
         return service.findOne(RolePermission.class, id);
     }
 
-    @GetMapping(path = "/api/rolePermission")
+    @GetMapping(path = "/authentication/rolePermission")
     public Page<RolePermission> listRolePermission(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
         return service.findAll(RolePermission.class,page,size);
     }

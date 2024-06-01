@@ -58,19 +58,19 @@ public class API {
         return new ResponseEntity(LoginData.builder().isAdmin(user.getIsAdmin()).isActive(user.getIsActive()).username(user.getUsername()).name(person.getName()).family(person.getFamily()).token(token).build(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/getUserId")
+    @GetMapping(path = "/authentication/getUserId")
     public ResponseEntity<String> getUserId(@RequestParam("token") String token) {
         Map map = JwtTokenUtil.getUsernameFromToken(token);
         return new ResponseEntity(map.get("id").toString(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/getUser")
+    @GetMapping(path = "/authentication/getUser")
     public ResponseEntity<Map> getUserObject(@RequestParam("token") String token) {
         Map map = JwtTokenUtil.getUsernameFromToken(token);
         return new ResponseEntity(map, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/checkValidationToken")
+    @GetMapping(path = "/authentication/checkValidationToken")
     public ResponseEntity<String> checkValidationToken(@RequestParam("token") String token, @RequestParam("url") String url) {
         try {
             CommonUtils.checkValidationToken(token, url);

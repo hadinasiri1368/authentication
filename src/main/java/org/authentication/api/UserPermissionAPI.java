@@ -22,7 +22,7 @@ public class UserPermissionAPI {
     private UserService userService;
 
 
-    @PostMapping(path = "/api/userPermission/add")
+    @PostMapping(path = "/authentication/userPermission/add")
     public Long addUserPermission(@RequestBody UserPermissionDto userPermissionDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserPermission userPermission = new UserPermission();
@@ -37,7 +37,7 @@ public class UserPermissionAPI {
         return userPermission.getId();
     }
 
-    @PutMapping(path = "/api/userPermission/edit")
+    @PutMapping(path = "/authentication/userPermission/edit")
     public Long editUserPermission(@RequestBody UserPermissionDto userPermissionDto, HttpServletRequest request) throws Exception {
         Long userId = CommonUtils.getUserId(CommonUtils.getToken(request));
         UserPermission userPermission = new UserPermission();
@@ -52,23 +52,23 @@ public class UserPermissionAPI {
         return userPermission.getId();
     }
 
-    @DeleteMapping(path = "/api/userPermission/remove/{id}")
+    @DeleteMapping(path = "/authentication/userPermission/remove/{id}")
     public Long removeUserPermission(@PathVariable Long id) {
         service.delete(id, UserPermission.class);
         return id;
     }
 
-    @GetMapping(path = "/api/userPermission/{id}")
+    @GetMapping(path = "/authentication/userPermission/{id}")
     public UserPermission getUserPermission(@PathVariable Long id) {
         return service.findOne(UserPermission.class, id);
     }
 
-    @GetMapping(path = "/api/userPermission")
+    @GetMapping(path = "/authentication/userPermission")
     public Page<UserPermission> listUserPermission(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
         return service.findAll(UserPermission.class, page, size);
     }
 
-    @GetMapping(path = "/api/userPermissionPerUser/{userId}")
+    @GetMapping(path = "/authentication/userPermissionPerUser/{userId}")
     public List<UserPermission> userPermissions(@PathVariable Long userId) {
         return userService.findUserPermission(userId);
     }
