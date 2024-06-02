@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
             } else {
                 log.info("RequestURL:" + request.getRequestURL() + "  UUID=" + request.getHeader("X-UUID") + "   message=token.is.not.valid");
-                throw new RuntimeException("token.is.not.valid");
+                throw new RuntimeException("1004");
             }
 
         }

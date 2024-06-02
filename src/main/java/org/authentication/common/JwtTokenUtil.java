@@ -103,7 +103,7 @@ public class JwtTokenUtil implements Serializable {
         String token = CommonUtils.getToken(request);
         org.authentication.model.User user = getUserFromToken(token);
         if (CommonUtils.isNull(user))
-            throw new UsernameNotFoundException("user.not.found");
+            throw new UsernameNotFoundException("1025");
         List<SimpleGrantedAuthority> auths = new ArrayList<>();
         auths.add(new SimpleGrantedAuthority("admin"));
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getIsActive(), false, false, false, auths);

@@ -166,4 +166,18 @@ public class UserService {
         return (User) genericJPA.listByQuery(query, param).get(0);
     }
 
+    public List<User> findAllUserRole(Long roleId) {
+        Query query = entityManager.createQuery("select u from userRole ur\n" +
+                "join user u   on ur.user.id=u.id\n" +
+                "where ur.role.id=:roleId\n" +
+                "union \n" +
+                "select u from  userGroupRole ugr\n" +
+                "join role r on ugr.role.id=r.id\n" +
+                "join userGroupDetail ugd on ugd.userGroup.id=ugr.id\n" +
+                "join user u on ugd.user.id=u.id where ugr.role.id=:roleId");
+        Map<String, Object> param = new HashMap<>();
+        param.put("roleId", roleId);
+        return genericJPA.listByQuery(query, param);
+    }
+
 }
