@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.authentication.common.CommonUtils;
 import org.authentication.common.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,7 +24,8 @@ import java.util.Arrays;
 @Component
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private String pathsToBypass = "/login/**,/v3/api-docs/**,/swagger-ui/**,/swagger-ui.html";
+    @Value("${authentication.paths-to-bypass}")
+    private String pathsToBypass;
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
@@ -59,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        if(request.getMethod().equals("OPTIONS"))
+        if (request.getMethod().equals("OPTIONS"))
             return true;
         String[] paths = pathsToBypass.split(",");
         for (String path : paths) {
