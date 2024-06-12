@@ -33,12 +33,14 @@ eureka:
     service-url:
       defaultZone: http://localhost:8080/eureka
 
-PageRequest :
-  page : 0
-  size : 10
+PageRequest:
+  page: 0
+  size: 10
 
 springdoc:
   swagger-ui:
+    server-url: http://localhost:8083
+#    server-url: http://ctiran.ir
     path: index.html
     enabled: true
     config-url: /authenticationSwagger/v3/api-docs/swagger-config
