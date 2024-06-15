@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -23,6 +24,7 @@ public class UserService {
     private JPA<User, Long> genericJPA;
     @Autowired
     private EntityManager entityManager;
+    private static List<Object[]> permissions = null;
 
     @Value("${PageRequest.page}")
     private Integer page;
@@ -95,25 +97,33 @@ public class UserService {
     }
 
     public List<Permission> listAllPermission(Long userId) {
-        String hql = "select p from userPermission up \n" +
+        if (CommonUtils.isNull(permissions))
+            permissions = listPermission();
+        return permissions.stream()
+                .filter(record -> userId.equals(record[1])) //user id field
+                .map(record -> (Permission) record[0]) // permission field
+                .collect(Collectors.toList());
+    }
+
+    public void resetAllPermissions() {
+        permissions = listPermission();
+    }
+
+    private List<Object[]> listPermission() {
+        String hql = "select p,up.user.id userId from userPermission up \n" +
                 "    inner join permission p on p.id=up.permission.id \n" +
-                "where up.user.id=:userId\n" +
                 "union\n" +
-                "select p from userRole ur \n" +
+                "select p,ur.user.id userId from userRole ur \n" +
                 "    inner join rolePermission rp on rp.role.id=ur.role.id\n" +
                 "    inner join permission p on p.id=rp.permission.id\n" +
-                "where ur.user.id=:userId\n" +
                 "union\n" +
-                "select p from userGroupDetail ugd\n" +
+                "select p,ugd.user.id userId from userGroupDetail ugd\n" +
                 "    inner join userGroup ug on ug.id=ugd.userGroup.id\n" +
                 "    inner join userGroupRole ugr on ugr.userGroup.id=ugd.userGroup.id\n" +
                 "    inner join rolePermission rp on rp.role.id=ugr.role.id\n" +
-                "    inner join permission p on p.id=rp.permission.id\n" +
-                "where ugd.user.id=:userId";
+                "    inner join permission p on p.id=rp.permission.id\n";
         Query query = entityManager.createQuery(hql);
-        Map<String, Object> param = new HashMap<>();
-        param.put("userId", userId);
-        return genericJPA.listByQuery(query, param);
+        return genericJPA.listByQuery(query);
     }
 
     @Transactional
