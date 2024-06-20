@@ -207,7 +207,15 @@ public class CommonUtils {
         long countResult = aClass.size();
         int pageNumber = pageRequest.getPageNumber();
         int pageSize = pageRequest.getPageSize();
-        aClass = aClass.subList((pageNumber * pageSize), pageSize);
-        return new PageImpl<>(aClass, pageRequest, countResult);
+
+        int fromIndex = pageNumber * pageSize;
+        int toIndex = Math.min(fromIndex + pageSize, aClass.size());
+
+        if (fromIndex > toIndex) {
+            fromIndex = toIndex;
+        }
+
+        List<T> subList = aClass.subList(fromIndex, toIndex);
+        return new PageImpl<>(subList, pageRequest, countResult);
     }
 }

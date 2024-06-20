@@ -10,19 +10,15 @@ import org.authentication.dto.ResponseDto.LoginData;
 import org.authentication.dto.ResponseDto.Person;
 import org.authentication.model.Role;
 import org.authentication.model.User;
-import org.authentication.model.UserRole;
 import org.authentication.service.TransportServiceProxcy;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")

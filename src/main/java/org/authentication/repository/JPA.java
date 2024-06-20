@@ -77,8 +77,8 @@ public class JPA<ENTITY, ID> {
         Entity entity = aClass.getAnnotation(Entity.class);
         Query query = entityManager.createQuery("select entity from " + entity.name() + " entity");
         List<ENTITY> fooList = query.getResultList();
-        PageRequest pageRequest = PageRequest.of(0, fooList.size());
-        return new PageImpl<ENTITY>(fooList, pageRequest, fooList.size());
+        PageRequest pageRequest = PageRequest.of(0, fooList.isEmpty() ? 1 : fooList.size());
+        return new PageImpl<ENTITY>(fooList, pageRequest, fooList.isEmpty() ? 1 :fooList.size());
     }
 
     public Page<ENTITY> findAllWithPaging(Class<ENTITY> aClass, PageRequest pageRequest) {
