@@ -129,6 +129,13 @@ public class CommonUtils {
         return count > 0 ? true : false;
     }
 
+    public static Boolean isUrlSensitive(String url) {
+        List<Permission> permissionList = userService.listAllPermission(url);
+        long count = 0;
+        count = permissionList.stream().filter(a -> a.getIsSensitive()).count();
+        return count > 0 ? true : false;
+    }
+
     public static void setNull(Object entity) throws Exception {
         Class cls = Class.forName(entity.getClass().getName());
         Field[] fields = cls.getDeclaredFields();
@@ -170,12 +177,14 @@ public class CommonUtils {
     }
 
     public static void checkValidationToken(String token, String url) throws RuntimeException {
+        if (!isUrlSensitive(url))
+            return;
         String message = getTokenValidationMessage(token);
         if (!isNull(message)) {
             throw new RuntimeException(message);
         }
         User user = JwtTokenUtil.getUserFromToken(token);
-        if (!CommonUtils.hasPermission(user, url))
+        if (!hasPermission(user, url))
             throw new RuntimeException("1010");
 
     }

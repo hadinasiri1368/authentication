@@ -20,4 +20,6 @@ public class Permission extends BaseEntity {
     private String url;
     @Column(columnDefinition = "NVARCHAR(50)")
     private String name;
+    @Column(name = "is_sensitive" , columnDefinition = "BIT")
+    private Boolean isSensitive;
 }

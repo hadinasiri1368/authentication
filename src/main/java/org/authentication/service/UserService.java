@@ -105,6 +105,15 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    public List<Permission> listAllPermission(String url) {
+        if (CommonUtils.isNull(permissions))
+            permissions = listPermission();
+        return permissions.stream()
+                .filter(record -> CommonUtils.isEqualUrl(((Permission) record[0]).getUrl().toLowerCase(),url.toLowerCase()))
+                .map(record -> (Permission) record[0])
+                .collect(Collectors.toList());
+    }
+
     public void resetAllPermissions() {
         permissions = listPermission();
     }
