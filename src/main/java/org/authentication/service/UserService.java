@@ -1,5 +1,6 @@
 package org.authentication.service;
 
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -9,12 +10,15 @@ import org.authentication.model.*;
 import org.authentication.repository.JPA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,11 +36,11 @@ public class UserService {
     private Integer size;
 
     public void insert(User user, Long userId) throws Exception {
-        user.setId(null);
-        user.setInsertedUserId(userId);
-        user.setInsertedDateTime(new Date());
-        user.setPassword(CommonUtils.getSHA1Hash(user.getPassword()));
-        genericJPA.save(user);
+            user.setId(null);
+            user.setInsertedUserId(userId);
+            user.setInsertedDateTime(new Date());
+            user.setPassword(CommonUtils.getSHA1Hash(user.getPassword()));
+            genericJPA.save(user);
     }
 
     public void update(User user, Long userId) throws Exception {
