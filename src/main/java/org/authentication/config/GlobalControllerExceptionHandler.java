@@ -62,8 +62,8 @@ public class GlobalControllerExceptionHandler {
         ExceptionDto exceptionDto = CommonUtils.getException(e);
         log.info("RequestURL:" + request.getRequestURL() + "  UUID=" + request.getHeader("X-UUID") + "  DuplicateKey:" + e.getMessage());
         return new ResponseEntity<>(ExceptionDto.builder()
-                .errorMessage(CommonUtils.isNull(exceptionDto) ? "duplicate key exception" : exceptionDto.getErrorMessage())
-                .errorCode(CommonUtils.isNull(exceptionDto) ? HttpStatus.CONFLICT.value(): exceptionDto.getErrorCode())
+                .errorMessage(exceptionDto.getErrorMessage())
+                .errorCode(exceptionDto.getErrorCode())
                 .uuid(request.getHeader("X-UUID"))
                 .errorStatus(HttpStatus.CONFLICT.value())
                 .build(), HttpStatus.CONFLICT);

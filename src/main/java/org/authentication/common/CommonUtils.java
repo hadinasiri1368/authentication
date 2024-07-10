@@ -218,22 +218,16 @@ public class CommonUtils {
     }
 
     public static ExceptionDto getException(SQLException exception) {
-
-        try {
-            if (exception.getMessage().toLowerCase().contains("duplicate key")) {
-                return ExceptionDto.builder()
-                        .errorCode(409)
-                        .errorMessage(getMessage("1007"))
-                        .build();
-            } else {
-                return ExceptionDto.builder()
-                        .errorCode(409)
-                        .errorMessage("1008")
-                        .build();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+        if (exception.getMessage().toLowerCase().contains("duplicate key")) {
+            return ExceptionDto.builder()
+                    .errorCode(409)
+                    .errorMessage(getMessage("1007"))
+                    .build();
+        } else {
+            return ExceptionDto.builder()
+                    .errorCode(409)
+                    .errorMessage("1008")
+                    .build();
         }
     }
 
