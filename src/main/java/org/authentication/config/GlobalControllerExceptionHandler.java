@@ -1,11 +1,13 @@
 package org.authentication.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.authentication.common.CommonUtils;
 import org.authentication.dto.ResponseDto.ExceptionDto;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.sql.SQLException;
 
 @RestControllerAdvice
 @Slf4j
@@ -30,7 +34,7 @@ public class GlobalControllerExceptionHandler {
     }
 
     @ExceptionHandler(value = FeignException.ServiceUnavailable.class)
-    public ResponseEntity<ExceptionDto> response(FeignException.ServiceUnavailable e, HttpServletRequest request) {
+    public ResponseEntity<ExceptionDto> response(FeignException.ServiceUnavailable e, HttpServletRequest request)  {
         ExceptionDto exceptionDto = CommonUtils.getException(e);
         log.info("RequestURL:" + request.getRequestURL() + "  UUID=" + request.getHeader("X-UUID") + "  ServiceUnavailable:" + (CommonUtils.isNull(exceptionDto) ? e.getMessage().split("]:")[1] : exceptionDto.getErrorMessage()));
         return new ResponseEntity<>(ExceptionDto.builder()
@@ -51,5 +55,17 @@ public class GlobalControllerExceptionHandler {
                 .uuid(request.getHeader("X-UUID"))
                 .errorStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .build(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = SQLServerException.class)
+    public ResponseEntity<ExceptionDto> handleDuplicateKeyException(SQLServerException e, HttpServletRequest request) {
+        ExceptionDto exceptionDto = CommonUtils.getException(e);
+        log.info("RequestURL:" + request.getRequestURL() + "  UUID=" + request.getHeader("X-UUID") + "  DuplicateKey:" + e.getMessage());
+        return new ResponseEntity<>(ExceptionDto.builder()
+                .errorMessage(CommonUtils.isNull(exceptionDto) ? "duplicate key exception" : exceptionDto.getErrorMessage())
+                .errorCode(CommonUtils.isNull(exceptionDto) ? HttpStatus.CONFLICT.value(): exceptionDto.getErrorCode())
+                .uuid(request.getHeader("X-UUID"))
+                .errorStatus(HttpStatus.CONFLICT.value())
+                .build(), HttpStatus.CONFLICT);
     }
 }

@@ -8,6 +8,7 @@ import org.authentication.model.Permission;
 import org.authentication.model.User;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,8 @@ import org.springframework.web.client.RestTemplate;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +28,14 @@ import java.util.Map;
 @Component
 @Slf4j
 public class CommonUtils {
+
+    private static MessageSource messageSource;
+
+    @Autowired
+    public void setMessageSource(MessageSource messageSource) {
+        CommonUtils.messageSource = messageSource;
+    }
+
     private static UserService userService;
 
     @Autowired
@@ -200,6 +211,32 @@ public class CommonUtils {
             return null;
         }
     }
+
+
+    public static String getMessage(String key) {
+        return messageSource.getMessage(key, null, null);
+    }
+
+    public static ExceptionDto getException(SQLException exception) {
+
+        try {
+            if (exception.getMessage().toLowerCase().contains("duplicate key")) {
+                return ExceptionDto.builder()
+                        .errorCode(409)
+                        .errorMessage(getMessage("1007"))
+                        .build();
+            } else {
+                return ExceptionDto.builder()
+                        .errorCode(409)
+                        .errorMessage("1008")
+                        .build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     public static <E> E isNull(E expr1, E expr2) {
         return (!isNull(expr1)) ? expr1 : expr2;
