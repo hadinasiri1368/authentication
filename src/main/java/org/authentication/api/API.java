@@ -67,7 +67,7 @@ public class API {
     }
 
     @GetMapping(path = "/authentication/checkValidationToken")
-    public ResponseEntity<String> checkValidationToken(@RequestParam("token") String token, @RequestParam("url") String url) {
+    public ResponseEntity<String> checkValidationToken(@RequestParam(value = "token",required = false) String token, @RequestParam("url") String url) {
         try {
             CommonUtils.checkValidationToken(token, url);
             return new ResponseEntity(null, HttpStatus.OK);

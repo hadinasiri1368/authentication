@@ -161,16 +161,14 @@ public class CommonUtils {
 
     public static boolean isEqualUrl(String permissionUrl, String requestUrl) {
         String[] permissionUrlArray = permissionUrl.split("/");
-        String[] requestUrlArray = permissionUrl.split("/");
+        String[] requestUrlArray = requestUrl.split("/");
         if (permissionUrlArray.length != requestUrlArray.length)
             return false;
         for (int i = 0; i < permissionUrlArray.length; i++) {
             if (permissionUrlArray[i].contains("{")) {
                 if (isNull(requestUrlArray[i]))
                     return false;
-            } else
-                continue;
-            if (permissionUrlArray[i].equals(requestUrlArray[i]))
+            } else if (!permissionUrlArray[i].equals(requestUrlArray[i]))
                 return false;
         }
         return true;
