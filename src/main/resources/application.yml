@@ -29,9 +29,11 @@ jwt:
   expirationMinutes: 60
 
 eureka:
+#  baseServerUrl: 192.168.100.10
+    baseServerUrl: localhost
   client:
     service-url:
-      defaultZone: http://localhost:8080/eureka
+      defaultZone: http://${eureka.baseServerUrl}:8080/eureka
 
 PageRequest:
   page: 0
