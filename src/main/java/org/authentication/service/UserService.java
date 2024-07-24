@@ -1,8 +1,7 @@
 package org.authentication.service;
 
-import com.microsoft.sqlserver.jdbc.SQLServerException;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.authentication.common.CommonUtils;
 import org.authentication.dto.RequestDto.ChangePasswordDto;
@@ -10,15 +9,11 @@ import org.authentication.model.*;
 import org.authentication.repository.JPA;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,8 +21,10 @@ import java.util.stream.Collectors;
 public class UserService {
     @Autowired
     private JPA<User, Long> genericJPA;
-    @Autowired
+
+    @PersistenceContext
     private EntityManager entityManager;
+
     private static List<Object[]> permissions = null;
 
     @Value("${PageRequest.page}")
@@ -36,11 +33,11 @@ public class UserService {
     private Integer size;
 
     public void insert(User user, Long userId) throws Exception {
-            user.setId(null);
-            user.setInsertedUserId(userId);
-            user.setInsertedDateTime(new Date());
-            user.setPassword(CommonUtils.getSHA1Hash(user.getPassword()));
-            genericJPA.save(user);
+        user.setId(null);
+        user.setInsertedUserId(userId);
+        user.setInsertedDateTime(new Date());
+        user.setPassword(CommonUtils.getSHA1Hash(user.getPassword()));
+        genericJPA.save(user);
     }
 
     public void update(User user, Long userId) throws Exception {
@@ -113,7 +110,7 @@ public class UserService {
         if (CommonUtils.isNull(permissions))
             permissions = listPermission();
         return permissions.stream()
-                .filter(record -> CommonUtils.isEqualUrl(((Permission) record[0]).getUrl().toLowerCase(),url.toLowerCase()))
+                .filter(record -> CommonUtils.isEqualUrl(((Permission) record[0]).getUrl().toLowerCase(), url.toLowerCase()))
                 .map(record -> (Permission) record[0])
                 .collect(Collectors.toList());
     }
@@ -187,6 +184,20 @@ public class UserService {
         Map<String, Object> param = new HashMap<>();
         param.put("personId", personId);
         return (User) genericJPA.listByQuery(query, param).get(0);
+    }
+
+    public List<User> findAllUserRole(Long roleId) {
+        Query query = entityManager.createQuery("select u from userRole ur\n" +
+                "join user u   on ur.user.id=u.id\n" +
+                "where ur.role.id=:roleId\n" +
+                "union \n" +
+                "select u from  userGroupRole ugr\n" +
+                "join role r on ugr.role.id=r.id\n" +
+                "join userGroupDetail ugd on ugd.userGroup.id=ugr.id\n" +
+                "join user u on ugd.user.id=u.id where ugr.role.id=:roleId");
+        Map<String, Object> param = new HashMap<>();
+        param.put("roleId", roleId);
+        return genericJPA.listByQuery(query, param);
     }
 
 }

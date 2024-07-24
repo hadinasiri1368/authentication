@@ -29,8 +29,8 @@ jwt:
   expirationMinutes: 60
 
 eureka:
-#  baseServerUrl: 192.168.100.10
-    baseServerUrl: localhost
+  #  baseServerUrl: 192.168.100.10
+  baseServerUrl: localhost
   client:
     service-url:
       defaultZone: http://${eureka.baseServerUrl}:8080/eureka
@@ -41,8 +41,8 @@ PageRequest:
 
 springdoc:
   swagger-ui:
-    server-url: http://localhost:8083
-#    server-url: http://ctiran.ir
+    server-url: http://localhost:8086
+    #    server-url: http://ctiran.ir
     path: index.html
     enabled: true
     config-url: /authenticationSwagger/v3/api-docs/swagger-config

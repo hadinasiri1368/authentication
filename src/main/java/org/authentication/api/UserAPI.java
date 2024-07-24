@@ -89,4 +89,10 @@ public class UserAPI {
     public User findPersonUser(@PathVariable Long personId) {
         return service.findUserPerson(User.class, personId);
     }
+
+    @GetMapping(path = "/authentication/UsersPerRole/{roleId}")
+    public List<User> findAllUserRole(@PathVariable Long roleId) {
+        return service.findAllUserRole(roleId);
+    }
+
 }
