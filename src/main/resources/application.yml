@@ -41,7 +41,7 @@ PageRequest:
 
 springdoc:
   swagger-ui:
-    server-url: http://localhost:8086
+    server-url: http://localhost:8083
     #    server-url: http://ctiran.ir
     path: index.html
     enabled: true
