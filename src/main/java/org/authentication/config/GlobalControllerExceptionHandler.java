@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.authentication.common.CommonUtils;
 import org.authentication.dto.ResponseDto.ExceptionDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +22,6 @@ import java.sql.SQLException;
 @RestControllerAdvice
 @Slf4j
 public class GlobalControllerExceptionHandler {
-    private final CommonUtils commonUtils;
-
-    public GlobalControllerExceptionHandler(CommonUtils commonUtils) {
-        this.commonUtils = commonUtils;
-    }
-
     @ExceptionHandler(value = FeignException.Unauthorized.class)
     public ResponseEntity<ExceptionDto> response(FeignException.Unauthorized e, HttpServletRequest request) {
         ExceptionDto exceptionDto = CommonUtils.getException(e);
