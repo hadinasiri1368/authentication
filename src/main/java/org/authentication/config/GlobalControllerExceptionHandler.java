@@ -21,6 +21,12 @@ import java.sql.SQLException;
 @RestControllerAdvice
 @Slf4j
 public class GlobalControllerExceptionHandler {
+    private final CommonUtils commonUtils;
+
+    public GlobalControllerExceptionHandler(CommonUtils commonUtils) {
+        this.commonUtils = commonUtils;
+    }
+
     @ExceptionHandler(value = FeignException.Unauthorized.class)
     public ResponseEntity<ExceptionDto> response(FeignException.Unauthorized e, HttpServletRequest request) {
         ExceptionDto exceptionDto = CommonUtils.getException(e);
@@ -34,7 +40,7 @@ public class GlobalControllerExceptionHandler {
     }
 
     @ExceptionHandler(value = FeignException.ServiceUnavailable.class)
-    public ResponseEntity<ExceptionDto> response(FeignException.ServiceUnavailable e, HttpServletRequest request)  {
+    public ResponseEntity<ExceptionDto> response(FeignException.ServiceUnavailable e, HttpServletRequest request) {
         ExceptionDto exceptionDto = CommonUtils.getException(e);
         log.info("RequestURL:" + request.getRequestURL() + "  UUID=" + request.getHeader("X-UUID") + "  ServiceUnavailable:" + (CommonUtils.isNull(exceptionDto) ? e.getMessage().split("]:")[1] : exceptionDto.getErrorMessage()));
         return new ResponseEntity<>(ExceptionDto.builder()
@@ -51,7 +57,7 @@ public class GlobalControllerExceptionHandler {
         log.info("RequestURL:" + request.getRequestURL() + "  UUID=" + request.getHeader("X-UUID") + "  ServiceInternalServerError:" + (CommonUtils.isNull(exceptionDto) ? e.getMessage().split("]:")[1] : exceptionDto.getErrorMessage()));
         return new ResponseEntity<>(ExceptionDto.builder()
                 .errorMessage(CommonUtils.isNull(exceptionDto) ? "internal server error" : exceptionDto.getErrorMessage())
-                .errorCode(CommonUtils.isNull(exceptionDto) ? HttpStatus.INTERNAL_SERVER_ERROR.value(): exceptionDto.getErrorCode())
+                .errorCode(CommonUtils.isNull(exceptionDto) ? HttpStatus.INTERNAL_SERVER_ERROR.value() : exceptionDto.getErrorCode())
                 .uuid(request.getHeader("X-UUID"))
                 .errorStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .build(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -68,4 +74,17 @@ public class GlobalControllerExceptionHandler {
                 .errorStatus(HttpStatus.CONFLICT.value())
                 .build(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(value = RuntimeException.class)
+    public ResponseEntity<ExceptionDto> response(RuntimeException e, HttpServletRequest request) {
+        ExceptionDto exceptionDto = CommonUtils.getException(e);
+        log.info("RequestURL:" + request.getRequestURL() + "  UUID=" + request.getHeader("X-UUID") + "  ServiceRuntimeException:" + (!CommonUtils.isNull(exceptionDto) ? exceptionDto.getErrorMessage() : CommonUtils.getMessage(e.getMessage())));
+        return new ResponseEntity<>(ExceptionDto.builder()
+                .errorMessage(!CommonUtils.isNull(exceptionDto) ? exceptionDto.getErrorMessage() : CommonUtils.getMessage(e.getMessage()))
+                .errorCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .uuid(request.getHeader("X-UUID"))
+                .errorStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .build(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

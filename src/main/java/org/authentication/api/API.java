@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
@@ -33,37 +34,37 @@ public class API {
         User user = userService.findOne(loginDto.getUsername(), loginDto.getPassword());
         String uuid = request.getHeader("X-UUID");
         if (user == null)
-            return new ResponseEntity("1022", HttpStatus.BAD_REQUEST);
+            throw new RuntimeException("1022") ;
         String token = JwtTokenUtil.generateToken(user);
         Person person = transportServiceProxcy.getPerson(token, uuid, user.getPersonId());
         if (CommonUtils.isNull(person))
-            return new ResponseEntity("1023", HttpStatus.BAD_REQUEST);
+            throw new RuntimeException("1023");
         List<Role> userRoles = userService.listAllRole(user.getId());
         if (!user.getIsAdmin()) {
-            if (loginDto.getUserType() == Const.USER_TYPE_EMPLOYEE) {
-                if (userRoles.stream().filter(item -> item.getId() == Const.USER_TYPE_EMPLOYEE.intValue()).count() == 0)
-                    return new ResponseEntity("1010", HttpStatus.BAD_REQUEST);
-            } else if (loginDto.getUserType() == Const.USER_TYPE_DRIVER) {
-                if (userRoles.stream().filter(item -> item.getId() == Const.USER_TYPE_DRIVER.intValue()).count() == 0)
-                    return new ResponseEntity("1010", HttpStatus.BAD_REQUEST);
-            } else if (loginDto.getUserType() == Const.USER_TYPE_CUSTOMER) {
-                if (userRoles.stream().filter(item -> item.getId() == Const.USER_TYPE_CUSTOMER.intValue()).count() == 0)
-                    return new ResponseEntity("1010", HttpStatus.BAD_REQUEST);
+            if (Objects.equals(loginDto.getUserType(), Const.USER_TYPE_EMPLOYEE)) {
+                if (userRoles.stream().noneMatch(item -> item.getId() == Const.USER_TYPE_EMPLOYEE.intValue()))
+                    throw new RuntimeException("1010");
+            } else if (Objects.equals(loginDto.getUserType(), Const.USER_TYPE_DRIVER)) {
+                if (userRoles.stream().noneMatch(item -> item.getId() == Const.USER_TYPE_DRIVER.intValue()))
+                    throw new RuntimeException("1010");
+            } else if (Objects.equals(loginDto.getUserType(), Const.USER_TYPE_CUSTOMER)) {
+                if (userRoles.stream().noneMatch(item -> item.getId() == Const.USER_TYPE_CUSTOMER.intValue()))
+                    throw new RuntimeException("1010");
             }
         }
-        return new ResponseEntity(LoginData.builder().isAdmin(user.getIsAdmin()).isActive(user.getIsActive()).username(user.getUsername()).name(person.getName()).family(person.getFamily()).token(token).build(), HttpStatus.OK);
+        return new ResponseEntity<>(LoginData.builder().isAdmin(user.getIsAdmin()).isActive(user.getIsActive()).username(user.getUsername()).name(person.getName()).family(person.getFamily()).token(token).build(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/authentication/getUserId")
     public ResponseEntity<String> getUserId(@RequestParam("token") String token) {
         Map map = JwtTokenUtil.getUsernameFromToken(token);
-        return new ResponseEntity(map.get("id").toString(), HttpStatus.OK);
+        return new ResponseEntity<>(map.get("id").toString(), HttpStatus.OK);
     }
 
     @GetMapping(path = "/authentication/getUser")
     public ResponseEntity<Map> getUserObject(@RequestParam("token") String token) {
         Map map = JwtTokenUtil.getUsernameFromToken(token);
-        return new ResponseEntity(map, HttpStatus.OK);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @GetMapping(path = "/authentication/checkValidationToken")
