@@ -143,6 +143,8 @@ public class CommonUtils {
     public static Boolean isUrlSensitive(String url) {
         List<Permission> permissionList = userService.listAllPermission(url);
         long count = 0;
+        if (CommonUtils.isNull(permissionList) || permissionList.size() == 0)
+            return true;
         count = permissionList.stream().filter(a -> a.getIsSensitive()).count();
         return count > 0 ? true : false;
     }
