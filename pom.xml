@@ -82,6 +82,10 @@
 			<artifactId>spring-security-config</artifactId>
 			<version>6.2.1</version>
 		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -109,6 +113,17 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.liquibase</groupId>
+				<artifactId>liquibase-maven-plugin</artifactId>
+				<configuration>
+					<changeLogFile>src/main/resources/db/changelog/db.changelog-master.xml</changeLogFile>
+					<url>jdbc:sqlserver://;serverName=172.30.23.136;databaseName=way;encrypt=true;trustServerCertificate=true</url>
+					<username>sa</username>
+					<password>asd123!@#</password>
+					<driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</driver>
 				</configuration>
 			</plugin>
 		</plugins>

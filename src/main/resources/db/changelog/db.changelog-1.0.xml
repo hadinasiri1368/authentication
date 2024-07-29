@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="developer_number_1">
+        <createTable tableName="hadi_nasiri" schemaName="authn">
+            <column name="id" type="numeric(18,0)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_hadi_nasiri"/>
+            </column>
+            <column name="name" type="nvarchar(50)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <sql>
+            INSERT INTO [authn].[hadi_nasiri]
+            SELECT 10, 'ostad hadi nasiri'
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
