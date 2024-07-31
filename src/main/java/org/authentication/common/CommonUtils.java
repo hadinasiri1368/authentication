@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.authentication.dto.ResponseDto.ExceptionDto;
 import org.authentication.model.Permission;
 import org.authentication.model.User;
+import org.authentication.service.GenericService;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -30,6 +31,7 @@ import java.util.Map;
 public class CommonUtils {
 
     private static MessageSource messageSource;
+    private static List<Permission> permissionList;
 
     @Autowired
     public void setMessageSource(MessageSource messageSource) {
@@ -37,10 +39,12 @@ public class CommonUtils {
     }
 
     private static UserService userService;
+    private static GenericService<Permission> permissionService;
 
     @Autowired
-    public CommonUtils(UserService userService) {
+    public CommonUtils(UserService userService, GenericService<Permission> permissionService) {
         CommonUtils.userService = userService;
+        CommonUtils.permissionService = permissionService;
     }
 
     private static String getHashString(String inputStrong, String hashType) {
@@ -141,11 +145,10 @@ public class CommonUtils {
     }
 
     public static Boolean isUrlSensitive(String url) {
-        List<Permission> permissionList = userService.listAllPermission(url);
+        if (isNull(permissionList))
+            permissionList = permissionService.findAll(Permission.class);
         long count = 0;
-        if (CommonUtils.isNull(permissionList) || permissionList.size() == 0)
-            return true;
-        count = permissionList.stream().filter(a -> a.getIsSensitive()).count();
+        count = permissionList.stream().filter(a -> a.getIsSensitive() && CommonUtils.isEqualUrl(a.getUrl().toLowerCase(), url.toLowerCase())).count();
         return count > 0 ? true : false;
     }
 
