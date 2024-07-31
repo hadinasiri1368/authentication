@@ -1,6 +1,8 @@
 server:
   port: 8081
 spring:
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
   application:
     name: "AUTHENTICATION"
   datasource:
