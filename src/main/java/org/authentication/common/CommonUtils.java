@@ -152,6 +152,18 @@ public class CommonUtils {
         return count > 0 ? true : false;
     }
 
+    public static boolean isNumeric(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     public static void setNull(Object entity) throws Exception {
         Class cls = Class.forName(entity.getClass().getName());
         Field[] fields = cls.getDeclaredFields();
@@ -182,7 +194,7 @@ public class CommonUtils {
             return false;
         for (int i = 0; i < permissionUrlArray.length; i++) {
             if (permissionUrlArray[i].contains("{")) {
-                if (isNull(requestUrlArray[i]))
+                if (isNull(requestUrlArray[i]) || !isNumeric(requestUrlArray[i]))
                     return false;
             } else if (!permissionUrlArray[i].equals(requestUrlArray[i]))
                 return false;
