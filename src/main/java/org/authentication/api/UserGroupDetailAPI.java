@@ -18,10 +18,13 @@ import java.util.List;
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
 public class UserGroupDetailAPI {
-    @Autowired
-    private GenericService<UserGroupDetail> service;
-    @Autowired
-    private UserService userService;
+    private final GenericService<UserGroupDetail> service;
+    private final UserService userService;
+
+    public UserGroupDetailAPI(GenericService<UserGroupDetail> service, UserService userService) {
+        this.service = service;
+        this.userService = userService;
+    }
 
     @PostMapping(path = "/authentication/userGroupDetail/add")
     public Long addUserGroupDetail(@RequestBody UserGroupDetailDto userGroupDetailDto, HttpServletRequest request) throws Exception {

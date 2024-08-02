@@ -20,8 +20,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class GenericService<Entity> {
-    @Autowired
-    private JPA<Entity, Long> genericJPA;
+    private final JPA<Entity, Long> genericJPA;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -30,6 +29,10 @@ public class GenericService<Entity> {
     private Integer page;
     @Value("${PageRequest.size}")
     private Integer size;
+
+    public GenericService(JPA<Entity, Long> genericJPA) {
+        this.genericJPA = genericJPA;
+    }
 
     @Transactional
     public void insert(Entity entity, Long userId) throws Exception {

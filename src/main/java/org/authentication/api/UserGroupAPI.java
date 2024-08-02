@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
 public class UserGroupAPI {
-    @Autowired
-    private GenericService<UserGroup> service;
+    private final GenericService<UserGroup> service;
+
+    public UserGroupAPI(GenericService<UserGroup> service) {
+        this.service = service;
+    }
 
     @PostMapping(path = "/authentication/userGroup/add")
     public Long addUserGroup(@RequestBody UserGroup userGroup, HttpServletRequest request)throws Exception {

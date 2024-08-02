@@ -12,7 +12,6 @@ import org.authentication.model.Role;
 import org.authentication.model.User;
 import org.authentication.service.TransportServiceProxcy;
 import org.authentication.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +23,13 @@ import java.util.Objects;
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
 public class API {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private TransportServiceProxcy transportServiceProxcy;
+    private final UserService userService;
+    private final TransportServiceProxcy transportServiceProxcy;
+
+    public API(UserService userService, TransportServiceProxcy transportServiceProxcy) {
+        this.userService = userService;
+        this.transportServiceProxcy = transportServiceProxcy;
+    }
 
     @PostMapping(path = "/login")
     public ResponseEntity<LoginData> login(@RequestBody LoginDto loginDto, HttpServletRequest request) throws Exception {

@@ -7,7 +7,6 @@ import org.authentication.dto.RequestDto.UserPermissionDto;
 import org.authentication.model.*;
 import org.authentication.service.GenericService;
 import org.authentication.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +15,13 @@ import java.util.List;
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
 public class UserPermissionAPI {
-    @Autowired
-    private GenericService<UserPermission> service;
-    @Autowired
-    private UserService userService;
+    private final GenericService<UserPermission> service;
+    private final UserService userService;
+
+    public UserPermissionAPI(GenericService<UserPermission> service, UserService userService) {
+        this.service = service;
+        this.userService = userService;
+    }
 
 
     @PostMapping(path = "/authentication/userPermission/add")

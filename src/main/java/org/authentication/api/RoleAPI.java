@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
 public class RoleAPI {
-    @Autowired
-    private GenericService<Role> service;
+    private final GenericService<Role> service;
+
+    public RoleAPI(GenericService<Role> service) {
+        this.service = service;
+    }
 
     @PostMapping(path = "/authentication/role/add")
     public Long addRole(@RequestBody Role role, HttpServletRequest request) throws Exception {

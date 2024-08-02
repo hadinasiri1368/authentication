@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    @Autowired
-    private JPA<User, Long> genericJPA;
+    private final JPA<User, Long> genericJPA;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -32,6 +31,11 @@ public class UserService {
     @Value("${PageRequest.size}")
     private Integer size;
 
+    public UserService(JPA<User, Long> genericJPA) {
+        this.genericJPA = genericJPA;
+    }
+
+    @Transactional
     public void insert(User user, Long userId) throws Exception {
         user.setId(null);
         user.setInsertedUserId(userId);
@@ -40,6 +44,7 @@ public class UserService {
         genericJPA.save(user);
     }
 
+    @Transactional
     public void update(User user, Long userId) throws Exception {
         if (CommonUtils.isNull(user.getId()))
             throw new RuntimeException("1006");
@@ -50,12 +55,17 @@ public class UserService {
         genericJPA.update(user);
     }
 
+    @Transactional
     public void delete(User user) {
         genericJPA.remove(user);
     }
 
+    @Transactional
     public int delete(Long userId) {
-        return entityManager.createQuery("delete from user where user.id=" + userId).executeUpdate();
+        Query query = entityManager.createQuery("delete from user where user.id=: userId");
+        Map<String, Object> param = new HashMap<>();
+        param.put("id", userId);
+        return genericJPA.executeUpdate(query,param);
     }
 
     public User findOne(Class<User> aClass, Long id) {

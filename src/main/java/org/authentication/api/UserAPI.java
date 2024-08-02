@@ -21,15 +21,18 @@ import java.util.List;
 @RestController
 @SecurityRequirement(name = "Bearer Authentication")
 public class UserAPI {
-    @Autowired
-    private UserService service;
-    @Autowired
-    private TransportServiceProxcy transportServiceProxcy;
+    private final UserService service;
+    private final TransportServiceProxcy transportServiceProxcy;
 
     @Value("${PageRequest.page}")
     private Integer page;
     @Value("${PageRequest.size}")
     private Integer size;
+
+    public UserAPI(TransportServiceProxcy transportServiceProxcy, UserService service) {
+        this.transportServiceProxcy = transportServiceProxcy;
+        this.service = service;
+    }
 
     @PostMapping(path = "/authentication/user/add")
     public Long addUser(@RequestBody User user, HttpServletRequest request) throws Exception {
