@@ -10,7 +10,6 @@ import org.authentication.model.Role;
 import org.authentication.model.User;
 import org.authentication.service.TransportServiceProxcy;
 import org.authentication.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -57,6 +56,17 @@ public class UserAPI {
     @GetMapping(path = "/authentication/user/{id}")
     public User getUser(@PathVariable Long id) {
         return service.findOne(User.class, id);
+    }
+
+    @GetMapping(path = "/authentication/userPerson/{userId}")
+    public UserPersonDto getUserPerson(HttpServletRequest request, @PathVariable Long userId) {
+        List<User> users = service.findAll(User.class);
+        String uuid = request.getHeader("X-UUID");
+        List<UserPersonDto> userPersonDtos = transportServiceProxcy.getUserPerson(CommonUtils.getToken(request), uuid, users);
+        if (userPersonDtos.stream().anyMatch(a -> a.getUser().getId().equals(userId))) {
+            return userPersonDtos.get(0);
+        }
+        throw new RuntimeException("1006");
     }
 
     @GetMapping(path = "/authentication/user")
