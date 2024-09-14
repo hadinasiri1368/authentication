@@ -16,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -64,9 +66,13 @@ public class UserAPI {
         return service.findAll(User.class);
     }
 
-    @GetMapping(path = "/authentication/userPerson")
-    public Page<UserPersonDto> listUserPerson(HttpServletRequest request, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
-        List<User> users = service.findAll(User.class);
+    @GetMapping(path = "/authentication/userPerson/{id}")
+    public Page<UserPersonDto> listUserPerson(HttpServletRequest request, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @PathVariable Long id) {
+        List<User> users;
+        if (CommonUtils.isNull(id))
+            users = service.findAll(User.class);
+        else
+            users = Collections.singletonList(service.findOne(User.class, id));
         String uuid = request.getHeader("X-UUID");
         List<UserPersonDto> userPersonDtos = transportServiceProxcy.getUserPerson(CommonUtils.getToken(request), uuid, users);
         if (CommonUtils.isNull(page) && CommonUtils.isNull(size)) {
