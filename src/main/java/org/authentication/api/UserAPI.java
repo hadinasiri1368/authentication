@@ -67,7 +67,7 @@ public class UserAPI {
     }
 
     @GetMapping(path = "/authentication/userPerson/{id}")
-    public Page<UserPersonDto> listUserPerson(HttpServletRequest request, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @PathVariable(name = "id" , required = false) Long id) {
+    public Page<UserPersonDto> listUserPersonByUserId(HttpServletRequest request, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @PathVariable(name = "id", required = false) Long id) {
         List<User> users;
         if (CommonUtils.isNull(id))
             users = service.findAll(User.class);
@@ -80,6 +80,11 @@ public class UserAPI {
         }
         PageRequest pageRequest = PageRequest.of(CommonUtils.isNull(page, this.page), CommonUtils.isNull(size, this.size));
         return CommonUtils.listPaging(userPersonDtos, pageRequest);
+    }
+
+    @GetMapping(path = "/authentication/userPerson")
+    public Page<UserPersonDto> listUserPerson(HttpServletRequest request, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size) {
+        return listUserPersonByUserId(request, page, size, null);
     }
 
     @GetMapping(path = "/authentication/user/role")
