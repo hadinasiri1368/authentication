@@ -67,7 +67,7 @@ public class UserAPI {
     }
 
     @GetMapping(path = "/authentication/userPerson/{id}")
-    public Page<UserPersonDto> listUserPerson(HttpServletRequest request, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @PathVariable Long id) {
+    public Page<UserPersonDto> listUserPerson(HttpServletRequest request, @RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "size", required = false) Integer size, @PathVariable(name = "id" , required = false) Long id) {
         List<User> users;
         if (CommonUtils.isNull(id))
             users = service.findAll(User.class);
