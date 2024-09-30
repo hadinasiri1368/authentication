@@ -21,10 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -147,9 +144,10 @@ public class CommonUtils {
     public static Boolean isUrlSensitive(String url) {
         if (isNull(permissionList))
             permissionList = permissionService.findAll(Permission.class);
-        long count = 0;
-        count = permissionList.stream().filter(a -> a.getIsSensitive() && CommonUtils.isEqualUrl(a.getUrl().toLowerCase(), url.toLowerCase())).count();
-        return count > 0 ? true : false;
+        Optional<Permission> permission = permissionList.stream().filter(a -> CommonUtils.isEqualUrl(a.getUrl().toLowerCase(), url.toLowerCase())).findFirst();
+        if(!permission.isPresent())
+            return true;
+        return permission.get().getIsSensitive();
     }
 
     public static boolean isNumeric(String str) {
