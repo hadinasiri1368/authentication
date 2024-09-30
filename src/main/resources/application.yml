@@ -52,4 +52,4 @@ springdoc:
     url: /authenticationSwagger/v3/api-docs
 
 authentication:
-  paths-to-bypass: /login/**,/v3/api-docs/**,/swagger-ui/**,/swagger-ui.html
+  paths-to-bypass: /login/**, /authentication/getUserId/**, /authentication/getUser/**, /authentication/checkValidationToken/**,/v3/api-docs/**, /swagger-ui/**, /swagger-ui.html
