@@ -89,7 +89,7 @@ public class GlobalControllerExceptionHandler {
         log.info("RequestURL:" + request.getRequestURL() + "  UUID=" + request.getHeader("X-UUID") + "  ServiceUnauthorized:" + e.getMessage());
         return new ResponseEntity<>(ExceptionDto.builder()
                 .errorMessage(CommonUtils.getMessage(e.getMessage()))
-                .errorCode(HttpStatus.UNAUTHORIZED.value())
+                .errorCode(CommonUtils.longValue(e.getMessage()).intValue())
                 .uuid(request.getHeader("X-UUID"))
                 .errorStatus(HttpStatus.UNAUTHORIZED.value())
                 .build(), HttpStatus.UNAUTHORIZED);
