@@ -85,7 +85,6 @@ public class GlobalControllerExceptionHandler {
 
     @ExceptionHandler(value = UnauthorizedException.class)
     public ResponseEntity<ExceptionDto> response(UnauthorizedException e, HttpServletRequest request) {
-        ExceptionDto exceptionDto = CommonUtils.getException(e);
         log.info("RequestURL:" + request.getRequestURL() + "  UUID=" + request.getHeader("X-UUID") + "  RequestUnauthorized:" + e.getMessage());
         return new ResponseEntity<>(ExceptionDto.builder()
                 .errorMessage(CommonUtils.getMessage(e.getMessage()))
