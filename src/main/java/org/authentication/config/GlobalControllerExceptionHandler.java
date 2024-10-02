@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.authentication.common.CommonUtils;
 import org.authentication.dto.ResponseDto.ExceptionDto;
+import org.authentication.exception.UnauthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -81,5 +82,18 @@ public class GlobalControllerExceptionHandler {
                 .errorStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .build(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(value = UnauthorizedException.class)
+    public ResponseEntity<ExceptionDto> response(UnauthorizedException e, HttpServletRequest request) {
+        ExceptionDto exceptionDto = CommonUtils.getException(e);
+        log.info("RequestURL:" + request.getRequestURL() + "  UUID=" + request.getHeader("X-UUID") + "  ServiceUnauthorized:" + e.getMessage());
+        return new ResponseEntity<>(ExceptionDto.builder()
+                .errorMessage(CommonUtils.getMessage(e.getMessage()))
+                .errorCode(HttpStatus.UNAUTHORIZED.value())
+                .uuid(request.getHeader("X-UUID"))
+                .errorStatus(HttpStatus.UNAUTHORIZED.value())
+                .build(), HttpStatus.UNAUTHORIZED);
+    }
+
 
 }

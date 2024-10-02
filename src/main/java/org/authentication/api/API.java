@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.authentication.dto.RequestDto.LoginDto;
 import org.authentication.dto.ResponseDto.LoginData;
 import org.authentication.dto.ResponseDto.Person;
+import org.authentication.exception.UnauthorizedException;
 import org.authentication.model.Role;
 import org.authentication.model.User;
 import org.authentication.service.TransportServiceProxcy;
@@ -53,6 +54,9 @@ public class API {
                 if (userRoles.stream().noneMatch(item -> item.getId() == Const.USER_TYPE_CUSTOMER.intValue()))
                     throw new RuntimeException("1010");
             }
+            else {
+                throw new RuntimeException("1010");
+            }
         }
         return new ResponseEntity<>(LoginData.builder().isAdmin(user.getIsAdmin()).isActive(user.getIsActive()).username(user.getUsername()).name(person.getName()).family(person.getFamily()).token(token).build(), HttpStatus.OK);
     }
@@ -75,7 +79,7 @@ public class API {
             CommonUtils.checkValidationToken(token, url);
             return new ResponseEntity(null, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            throw  new UnauthorizedException(e.getMessage());
         }
     }
 }
