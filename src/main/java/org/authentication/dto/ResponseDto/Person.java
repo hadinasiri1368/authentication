@@ -22,6 +22,7 @@ public class Person {
     private String companyNationalCode;
     private String establishDate;
     private String managerName;
+    private String managerLastName;
     private String managerNationalCode;
     private String managerBirthDate;
     private String managerMobileNumber;
