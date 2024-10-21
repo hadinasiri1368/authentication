@@ -10,7 +10,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.time.DateUtils;
+import org.authentication.dto.RequestDto.CaptchaDto;
 import org.authentication.model.User;
+import org.authentication.service.CaptchaTokenManager;
+import org.authentication.service.TokenManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Component;
 public class JwtTokenUtil implements Serializable {
     private static String secret;
     private static int expirationMinutes;
+    private static int expirationCaptchaMinutes;
 
     @Value("${jwt.secretKey}")
     public void setSecret(String secret) {
@@ -32,15 +36,26 @@ public class JwtTokenUtil implements Serializable {
         this.expirationMinutes = expirationMinutes;
     }
 
+    @Value("${jwt.expirationCaptchaMinutes}")
+    public void setExpirationCaptchaMinutes(int expirationCaptchaMinutes) {
+        this.expirationCaptchaMinutes = expirationCaptchaMinutes;
+    }
+
     public static Map getUsernameFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-        return (Map) claims.get("tokenDate");
+        return (Map) claims.get("tokenData");
     }
 
     public static User getUserFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.convertValue((Map) claims.get("tokenDate"), User.class);
+        return mapper.convertValue((Map) claims.get("tokenData"), User.class);
+    }
+
+    public static CaptchaDto getCaptchaFromToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue((Map) claims.get("captchaData"), CaptchaDto.class);
     }
 
     private static Date getExpirationDateFromToken(String token) throws Exception {
@@ -71,11 +86,19 @@ public class JwtTokenUtil implements Serializable {
         if (!CommonUtils.isNull(oldToken)) {
             if (!isTokenExpired(oldToken))
                 return oldToken;
-            TokenManager.getInstance().removeTokenByUserId(o.getId());
+            TokenManager.getInstance().removeTokenById(o.getId());
         }
-        claims.put("tokenDate", o);
+        claims.put("tokenData", o);
         String token = doGenerateToken(claims);
         TokenManager.getInstance().setToken(o.getId(), token);
+        return token;
+    }
+
+    public static String generateCaptchaToken(CaptchaDto captchaData) throws Exception {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("captchaData", captchaData);
+        String token = doGenerateCaptchaToken(claims);
+        CaptchaTokenManager.getInstance().setToken(captchaData.getUuid(), token);
         return token;
     }
 
@@ -86,12 +109,32 @@ public class JwtTokenUtil implements Serializable {
 
     }
 
+    private static String doGenerateCaptchaToken(Map<String, Object> claims) {
+        return Jwts.builder().setClaims(claims).setSubject("token").setIssuedAt(new Date())
+                .setExpiration(DateUtils.addMinutes(new Date(), expirationCaptchaMinutes))
+                .signWith(SignatureAlgorithm.HS512, secret).compact();
+
+    }
+
     public static Boolean validateToken(String token) {
         try {
             boolean tokenExpired = isTokenExpired(token);
             if (tokenExpired)
                 return false;
-            if (!TokenManager.getInstance().HasToken(token))
+            if (!TokenManager.getInstance().exists(token))
+                return false;
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static Boolean validateCaptchaToken(String token) {
+        try {
+            boolean tokenExpired = isTokenExpired(token);
+            if (tokenExpired)
+                return false;
+            if (!CaptchaTokenManager.getInstance().exists(token))
                 return false;
             return true;
         } catch (Exception e) {

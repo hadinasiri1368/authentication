@@ -16,4 +16,5 @@ public class LoginDto {
     private String username;
     private String password;
     private Integer userType;
+    private String captchaCode;
 }

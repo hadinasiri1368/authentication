@@ -3,12 +3,16 @@ package org.authentication.common;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.authentication.dto.RequestDto.CaptchaDto;
 import org.authentication.dto.ResponseDto.ExceptionDto;
 import org.authentication.model.Permission;
 import org.authentication.model.User;
+import org.authentication.service.CaptchaTokenManager;
 import org.authentication.service.GenericService;
+import org.authentication.service.TokenManager;
 import org.authentication.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,11 +21,19 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.List;
 
 @Component
 @Slf4j
@@ -29,6 +41,10 @@ public class CommonUtils {
 
     private static MessageSource messageSource;
     private static List<Permission> permissionList;
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    private static final SecureRandom random = new SecureRandom();
+    private static int captchaHeight;
+    private static int captchaWidth;
 
     @Autowired
     public void setMessageSource(MessageSource messageSource) {
@@ -42,6 +58,16 @@ public class CommonUtils {
     public CommonUtils(UserService userService, GenericService<Permission> permissionService) {
         CommonUtils.userService = userService;
         CommonUtils.permissionService = permissionService;
+    }
+
+    @Value("${authentication.captcha-height}")
+    public void setCaptchaHeight(int captchaHeight) {
+        this.captchaHeight = captchaHeight;
+    }
+
+    @Value("${authentication.captcha-width}")
+    public void setCaptchaWidth(int captchaWidth) {
+        this.captchaWidth = captchaWidth;
     }
 
     private static String getHashString(String inputStrong, String hashType) {
@@ -85,7 +111,7 @@ public class CommonUtils {
         try {
             if (token == null || token.isBlank() || token.isEmpty())
                 return "1003";
-            if (!TokenManager.getInstance().HasToken(token))
+            if (!TokenManager.getInstance().exists(token))
                 return "1002";
             if (!JwtTokenUtil.validateToken(token))
                 return "1004";
@@ -270,5 +296,83 @@ public class CommonUtils {
 
         List<T> subList = aClass.subList(fromIndex, toIndex);
         return new PageImpl<>(subList, pageRequest, countResult);
+    }
+
+    public static String generateRandomString(int length) {
+        StringBuilder result = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            result.append(CHARACTERS.charAt(randomIndex));
+        }
+
+        return result.toString();
+    }
+
+    public static UUID generateUUID() {
+        long most64SigBits = get64MostSignificantBitsForVersion1();
+        long least64SigBits = get64LeastSignificantBitsForVersion1();
+        return new UUID(most64SigBits, least64SigBits);
+    }
+
+    private static long get64LeastSignificantBitsForVersion1() {
+        Random random = new Random();
+        long random63BitLong = random.nextLong() & 0x3FFFFFFFFFFFFFFFL;
+        long variant3BitFlag = 0x8000000000000000L;
+        return random63BitLong | variant3BitFlag;
+    }
+
+    private static long get64MostSignificantBitsForVersion1() {
+        final long currentTimeMillis = System.currentTimeMillis();
+        final long time_low = (currentTimeMillis & 0x0000_0000_FFFF_FFFFL) << 32;
+        final long time_mid = ((currentTimeMillis >> 32) & 0xFFFF) << 16;
+        final long version = 1 << 12;
+        final long time_hi = ((currentTimeMillis >> 48) & 0x0FFF);
+        return time_low | time_mid | version | time_hi;
+    }
+
+    public static byte[] generateCaptchaImage(String captchaText) throws IOException {
+        int width = captchaWidth;
+        int height = captchaHeight;
+
+        BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        Graphics2D g2d = bufferedImage.createGraphics();
+
+        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.fillRect(0, 0, width, height);
+
+        Font font = new Font("Arial", Font.BOLD, 40);
+        g2d.setFont(font);
+
+        Random random = new Random();
+        for (int i = 0; i < captchaText.length(); i++) {
+            g2d.setColor(new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255)));
+            g2d.drawString(String.valueOf(captchaText.charAt(i)), (i * 30) + 10, 40);
+        }
+
+        for (int i = 0; i < 5; i++) {
+            g2d.setColor(new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255)));
+            g2d.drawLine(random.nextInt(width), random.nextInt(height), random.nextInt(width), random.nextInt(height));
+        }
+
+        g2d.dispose();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "png", baos);
+
+        return baos.toByteArray();
+    }
+
+    public static CaptchaDto getCaptcha(HttpServletRequest request) {
+        String token = getToken(request);
+        if (token == null)
+            throw new RuntimeException("1025");
+        if (!JwtTokenUtil.validateCaptchaToken(token))
+            throw new RuntimeException("1025");
+        CaptchaDto captchaDto = JwtTokenUtil.getCaptchaFromToken(token);
+        if (captchaDto == null || captchaDto.getCaptchaCode() == null || captchaDto.getUuid() == null)
+            throw new RuntimeException("1025");
+        return captchaDto;
     }
 }
