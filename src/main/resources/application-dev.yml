@@ -22,13 +22,17 @@ spring:
             loggerLevel: full
 
 
+#logging:
+#  level:
+#    root: info
+
 jwt:
   secretKey: eyJhbGciOiJIUzI1NiJ9.eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4cCI6MTcwMDYzODUzNywiaWF0IjoxNzAwNjM4NTM3fQ.cakxNusKVbUYfXIO_ldis-uQtQMxRO58Tktr31X6O_I
   expirationMinutes: 60
   expirationCaptchaMinutes: 1
 
 eureka:
-  baseServerUrl: ctiran.ir
+  baseServerUrl: localhost
   client:
     service-url:
       defaultZone: http://${eureka.baseServerUrl}:8080/eureka
@@ -39,7 +43,7 @@ PageRequest:
 
 springdoc:
   swagger-ui:
-    server-url: http://ctiran.ir
+    server-url: http://localhost:8083
     path: index.html
     enabled: true
     config-url: /authenticationSwagger/v3/api-docs/swagger-config
